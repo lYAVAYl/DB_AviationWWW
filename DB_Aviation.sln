@@ -3,7 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Logic\Logic.csproj", "{33F1BB59-7495-4178-AAA5-00BFFE52B0FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModel", "ViewModel\ViewModel.csproj", "{78E9F996-A0D2-4FBC-BDAD-012E7F3D6A30}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33F1BB59-7495-4178-AAA5-00BFFE52B0FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33F1BB59-7495-4178-AAA5-00BFFE52B0FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33F1BB59-7495-4178-AAA5-00BFFE52B0FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33F1BB59-7495-4178-AAA5-00BFFE52B0FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78E9F996-A0D2-4FBC-BDAD-012E7F3D6A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78E9F996-A0D2-4FBC-BDAD-012E7F3D6A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78E9F996-A0D2-4FBC-BDAD-012E7F3D6A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78E9F996-A0D2-4FBC-BDAD-012E7F3D6A30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
