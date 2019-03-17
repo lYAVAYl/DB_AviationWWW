@@ -285,14 +285,14 @@ namespace Logic
             city_d -= airportFlyOut.Airport_City.Length;
             name_d -= airportFlyOut.Airport_Name.Length;
 
-            Console.WriteLine($"║ {airportFlyOut.Airport_Code} ║   {airportFlyOut.Airport_City}{new string(' ',city_d)}  ║   {airportFlyOut.Airport_Name}{name_d}  ║" +
-                              " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣ ");
+            Console.WriteLine($" ║ {airportFlyOut.Airport_Code} ║   {airportFlyOut.Airport_City}{new string(' ',city_d)}  ║   {airportFlyOut.Airport_Name}{new string(' ',name_d)}  ║" +
+                               " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣\n ");
 
             city_d -= airportFlyIn.Airport_City.Length;
             name_d -= airportFlyIn.Airport_Name.Length;
 
-            Console.WriteLine($"║ {airportFlyIn.Airport_Code} ║   {airportFlyIn.Airport_City}{new string(' ', city_d)}  ║   {airportFlyIn.Airport_Name}{name_d}  ║" +
-                              " ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
+            Console.WriteLine($" ║ {airportFlyIn.Airport_Code} ║   {airportFlyIn.Airport_City}{new string(' ', city_d)}  ║   {airportFlyIn.Airport_Name}{new string(' ', name_d)}  ║" +
+                               " ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
 
             var press = Console.ReadKey(true).Key;
             while (press != ConsoleKey.Escape)

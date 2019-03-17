@@ -131,9 +131,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    prices.AddPriceForReis(); // добавление цен
-                    airports.Airport_Adding(); // добавление аэропорта
-                    reises.AddReise(airports,prices);
+                    reises.AddReise(airports, prices);
                     // Вызов метода добавления
                     break;
 
@@ -195,7 +193,6 @@ namespace ViewModel
                 case ConsoleKey.Enter: // выбор выделенного пункта меню
                     Console.Clear();
                     reises.PrintReis();
-                    PrintAirports(airports); // метод вывода таблицы аэропортов
                     Console.ReadKey();
                     break;
 

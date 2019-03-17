@@ -38,24 +38,28 @@ namespace Logic
             Console.WriteLine("---> Добавление Рейса <---\n\n\n\n\n\n\n");
 
 
-            Console.Write("");
+            Console.Write("Аэропорт вылета: ");
+            Console.ReadLine();
+            airports.Airport_Adding();
+            Reises_List.Add(new Reises { Airport_FlyOut = airports.Airport_List.LastOrDefault() });
 
+            Console.WriteLine("Аэропорт прилёта: ");
+            Console.ReadLine();
+            airports.Airport_Adding();
+            Reises_List.Add(new Reises { Airport_FlyIn = airports.Airport_List.LastOrDefault() });
 
-
-
-
-
-
-
+            Console.WriteLine("Код аэропорта: ");
+            Console.ReadLine();
+            prices.AddPriceForReis();
+            Reises_List.Add(new Reises { ReisCode = prices.Prices_List.Last() });
         }
+
 
         public void PrintReis()
         {
-            
-
-
-
-
+            Console.WriteLine(Reises_List[0].Airport_FlyIn.Airport_Code);
+            Console.WriteLine(Reises_List[0].Airport_FlyIn.Airport_City);
+            Console.WriteLine(Reises_List[0].Airport_FlyIn.Airport_Name);
 
         }
 
