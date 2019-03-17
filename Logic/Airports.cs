@@ -295,10 +295,10 @@ namespace Logic
                               " ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
 
             var press = Console.ReadKey(true).Key;
-            //while(press != ConsoleKey.Escape)
-            //{
-            //    press = Console.ReadKey(true).Key;
-            //}
+            while (press != ConsoleKey.Escape)
+            {
+                press = Console.ReadKey(true).Key;
+            }
 
 
 
