@@ -112,7 +112,7 @@ namespace Logic
         }
 
 
-        // isCOrrect
+        // isCorrect
         #region Проверка введённой строки на корректность
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Logic
         /// <param name="minLenght">минимальная длина</param>
         /// <param name="maxLenght">максимальная длина</param>
         /// <returns></returns>
-        private static bool isCorrect(out string testingName, int minLenght=3, int maxLenght = 60)
+        public static bool isCorrect(out string testingName, int minLenght=3, int maxLenght = 60)
         {
             testingName = Console.ReadLine(); // чтение введённой сроки
             testingName = testingName.Trim(); // удаление ненужных пробелов в начале и конце введённой строки
@@ -155,7 +155,7 @@ namespace Logic
                 Console.ReadKey();
                 return false;
             }
-            else // все проверки пройдены умпешно
+            else // все проверки пройдены успешно
                 return true;
 
         }
@@ -168,7 +168,7 @@ namespace Logic
         #region Метод проверки на наличие "запрещённых символов" в строке
         private static bool IsIllegalSymb(string test) // передача строки в метод
         {
-            string illegalChars = "1234567890!@\"#$%^&*_+=:;<>!?\\/|[]{}"; // "запрещённые" символы
+            string illegalChars = "1234567890!@\"#$%^&*_+=:;<>!?\\/|[]{}\t"; // "запрещённые" символы
 
             foreach (char c in test) // берём символ из строки
             {
@@ -282,16 +282,10 @@ namespace Logic
                               " ║ Код ║                        Город                          ║                              Название                           ║\n" +
                               " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣" ); 
             
-            city_d -= airportFlyOut.Airport_City.Length;
-            name_d -= airportFlyOut.Airport_Name.Length;
-
-            Console.WriteLine($" ║ {airportFlyOut.Airport_Code} ║   {airportFlyOut.Airport_City}{new string(' ',city_d)}  ║   {airportFlyOut.Airport_Name}{new string(' ',name_d)}  ║" +
+            Console.WriteLine($" ║ {airportFlyOut.Airport_Code} ║   {airportFlyOut.Airport_City,50}  ║   {airportFlyOut.Airport_Name,60}  ║" +
                                " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣\n ");
 
-            city_d -= airportFlyIn.Airport_City.Length;
-            name_d -= airportFlyIn.Airport_Name.Length;
-
-            Console.WriteLine($" ║ {airportFlyIn.Airport_Code} ║   {airportFlyIn.Airport_City}{new string(' ', city_d)}  ║   {airportFlyIn.Airport_Name}{new string(' ', name_d)}  ║" +
+            Console.WriteLine($" ║ {airportFlyIn.Airport_Code} ║   {airportFlyIn.Airport_City,50}  ║   {airportFlyIn.Airport_Name,60}  ║" +
                                " ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
 
             var press = Console.ReadKey(true).Key;

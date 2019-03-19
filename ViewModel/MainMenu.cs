@@ -192,7 +192,6 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter: // выбор выделенного пункта меню
                     Console.Clear();
-                    reises.PrintReis();
                     Console.ReadKey();
                     break;
 
