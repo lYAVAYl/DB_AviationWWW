@@ -51,7 +51,7 @@ namespace Logic
             string reisCode = ""; 
             int buisnessClass_Num = 0, buisnessClass_Price = 0, economClass_Num = 0, economClass_Price = 0;
 
-            bool exit = false, allright = false;
+            bool exit = false, allright = false; 
 
             while (!allright)
             {

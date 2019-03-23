@@ -36,7 +36,7 @@ namespace Logic
 
             // Марка самолёта: уникальный
 
-
+            int FlyIn_ind=0, FlyOut_ind=0;
             DateTime FlyOut_data = new DateTime();
             DateTime FlyIn_data = new DateTime();
             string planemark="";
@@ -46,49 +46,78 @@ namespace Logic
 
             while (!allright)
             {
-                // аэропорт вылета
+                #region Аэропорт вылета
                 while (!exit)
                 {
-                    if (NewOrCreated("---> Добавление Рейса <---\n\n\n\n\n\n\nАэропорт вылета: ", ref exit))
+                    if (NewOrCreated("---> Добавление Рейса <---\n\n\n\n\n\n\n\nАэропорт вылета: ", ref exit))
                     {
                         airports.Airport_Adding(); // предпоследний в списке (predposl)
+                        FlyOut_ind = airports.Airport_List.Count - 1;
                     }
                     else
                     {
-                        // ТАБЛИЦА СУЩЕСТВУЮЩИХ АЭРОПОРТОВ
-                        exit = true;
+                        if (airports.Airport_List.Count >= 1)
+                        {
+                            FlyOut_ind = airports.ChooseCreatedAirport();
+                            if (FlyOut_ind >= 0)
+                                exit = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nСписок аэропортов не достаточно большой. Введите хотя бы 2 аэропорта.\n" +
+                                              "Нажмите любую клавишу, чтобы продолжить...");
+                            exit = false;
+                            Console.ReadKey(true);
+                        }
+                        
+                            
                     }
 
                 }
                 exit = false;
+                #endregion
 
-                // аэропорт прилёта
+                #region Аэропорт прилёта
                 while (!exit)
                 {
-                    if (NewOrCreated("---> Добавление Рейса <---\n" +
-                                     "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 1].Airport_Name + "\n\n\n\n\n" +
+                    if (NewOrCreated("---> Добавление Рейса <---\n\n" +
+                                     "Аэропорт вылета: " + airports.Airport_List[FlyOut_ind].Airport_Name + "\n\n\n\n\n" +
                                      "Аэропорт прилёта: ", ref exit))
                     {
                         airports.Airport_Adding(); // предпоследний в списке (predposl)
+                        FlyIn_ind = airports.Airport_List.Count - 1;
                     }
                     else
                     {
-                        // ТАБЛИЦА СУЩЕСТВУЮЩИХ АЭРОПОРТОВ
-                        exit = true;
+                        if (airports.Airport_List.Count >= 1)
+                        {
+                            FlyIn_ind = airports.ChooseCreatedAirport(FlyOut_ind);
+                            if (FlyIn_ind >= 0 && FlyIn_ind!=FlyOut_ind)
+                                exit = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nСписок аэропортов не достаточно большой. Введите хотя бы 2 аэропорта.\n" +
+                                              "Нажмите любую клавишу, чтобы продолжить...");
+                            exit = false;
+                            Console.ReadKey(true);
+                        }
+
                     }
 
                 }
                 exit = false;
+                #endregion
 
 
 
-                // код рейса + цена + места
+                #region Код рейса + цена + места
                 while (!exit)
                 {
                     Console.Clear();
-                    Console.WriteLine("---> Добавление Рейса <---\n" +
-                                      "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 2].Airport_Name + "\n" +
-                                      "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n\n\n\n");
+                    Console.WriteLine("---> Добавление Рейса <---\n\n" +
+                                      "Аэропорт вылета: " + airports.Airport_List[FlyOut_ind].Airport_Name + "\n" +
+                                      "Аэропорт прилёта: " + airports.Airport_List[FlyIn_ind].Airport_Name + "\n\n\n\n");
 
                     Console.Write("Ввод кода рейса...");
                     Console.ReadKey(true);
@@ -98,17 +127,17 @@ namespace Logic
 
                 }
                 exit = false;
+                #endregion
 
 
 
-
-                // дата вылета
+                #region Дата вылета
                 while (!exit)
                 {
                     Console.Clear();
-                    Console.WriteLine("---> Добавление Рейса <---\n" +
-                                      "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 2].Airport_Name + "\n" +
-                                      "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n" +
+                    Console.WriteLine("---> Добавление Рейса <---\n\n" +
+                                      "Аэропорт вылета: " + airports.Airport_List[FlyOut_ind].Airport_Name + "\n" +
+                                      "Аэропорт прилёта: " + airports.Airport_List[FlyIn_ind].Airport_Name + "\n" +
                                       "Код рейса: " + prices.Prices_List.Last().ReisCode + "\n\n\n");
                     try
                     {
@@ -123,14 +152,15 @@ namespace Logic
                     
                 }
                 exit = false;
+                #endregion
 
-                // дата прилёта
+                #region Дата прилёта
                 while (!exit)
                 {
                     Console.Clear();
-                    Console.WriteLine("---> Добавление Рейса <---\n" +
-                                      "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 1].Airport_Name + "\n" +
-                                      "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n" +
+                    Console.WriteLine("---> Добавление Рейса <---\n\n" +
+                                      "Аэропорт вылета: " + airports.Airport_List[FlyOut_ind].Airport_Name + "\n" +
+                                      "Аэропорт прилёта: " + airports.Airport_List[FlyIn_ind].Airport_Name + "\n" +
                                       "Код рейса: " + prices.Prices_List.Last().ReisCode + "\n" +
                                       $"Дата вылета: {FlyOut_data.Day}.{FlyOut_data.Month}.{FlyOut_data.Year}   {FlyOut_data.Hour}:{FlyOut_data.Minute}\n\n");
 
@@ -138,8 +168,7 @@ namespace Logic
                     try
                     {
                         Console.WriteLine("Дата прилёта.");
-                        exit = isCorrect_Date(out FlyIn_data);
-                        exit = isCorrect_Difference(FlyOut_data, FlyIn_data);
+                        exit = isCorrect_Date(out FlyIn_data) && isCorrect_Difference(FlyOut_data, FlyIn_data);
                         
                     }
                     catch
@@ -153,17 +182,17 @@ namespace Logic
 
                 }
                 exit = false;
+                #endregion
 
 
 
-                
-                // марка самолёта
+                #region Марка самолёта
                 while (!exit)
                 {
                     Console.Clear();
-                    Console.WriteLine("---> Добавление Рейса <---\n" +
-                                      "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 2].Airport_Name + "\n" +
-                                      "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n" +
+                    Console.WriteLine("---> Добавление Рейса <---\n\n" +
+                                      "Аэропорт вылета: " + airports.Airport_List[FlyOut_ind].Airport_Name + "\n" +
+                                      "Аэропорт прилёта: " + airports.Airport_List[FlyIn_ind].Airport_Name + "\n" +
                                       "Код рейса: " + prices.Prices_List.Last().ReisCode + "\n" +
                                       $"Дата вылета: {FlyOut_data.Day}.{FlyOut_data.Month}.{FlyOut_data.Year}   {FlyOut_data.Hour}:{FlyOut_data.Minute}\n" +
                                       $"Дата прилёта: {FlyIn_data.Day}.{FlyIn_data.Month}.{FlyIn_data.Year}   {FlyIn_data.Hour}:{FlyIn_data.Minute}\n");
@@ -172,44 +201,58 @@ namespace Logic
                     exit = isCorrect_String(out planemark);
 
                 }
+                exit = false;
+                #endregion
+
 
                 //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-                // подтверждение ввода
+                #region Подтверждение ввода
                 bool apply = false;
                 while (!apply) // цикл отображения таблички
                 {
                     Console.Clear();
                     Console.WriteLine();
-
-                    Airports.AreUSure("---> Добавление Рейса <---\n" +
+                    Airports.AreUSure("---> Добавление Рейса <---\n\n" +
                                       "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 2].Airport_Name + "\n" +
                                       "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n" +
                                       "Код рейса: " + prices.Prices_List.Last().ReisCode + "\n" +
                                       $"Дата вылета: {FlyOut_data.Day}.{FlyOut_data.Month}.{FlyOut_data.Year}   {FlyOut_data.Hour}:{FlyOut_data.Minute}\n" +
                                       $"Дата прилёта: {FlyIn_data.Day}.{FlyIn_data.Month}.{FlyIn_data.Year}   {FlyIn_data.Hour}:{FlyIn_data.Minute}\n" +
-                                      "Марка самолёта: " + planemark,
+                                      "Марка самолёта: " + planemark + "\n\n",
                                       ref allright, ref apply);
                 }
 
             }
             exit = false;
-
+            #endregion
 
             Console.WriteLine("ВСЁ ЗАПОЛНЕНО УРЯЯЯЯ");
 
-            Reises_List.Add(new Reises { Airport_FlyOut = airports.Airport_List[airports.Airport_List.Count - 2]
-                                        ,Airport_FlyIn = airports.Airport_List.Last()
+            // добавление рейса
+            Reises_List.Add(new Reises { Airport_FlyOut = airports.Airport_List[FlyOut_ind]
+                                        ,Airport_FlyIn = airports.Airport_List[FlyIn_ind]
                                         ,Data_FlyOut = FlyOut_data
                                         ,Data_FlyIn = FlyIn_data
                                         ,PlaneMark = planemark});
 
              Console.ReadKey(true);
+            
 
         }
 
 
+
+
+
+        #region NewOrCreated airport
         // Добавить новый аэропорт или ужу созданный?
+        /// <summary>
+        /// Новый аэропорт или уже созданный?
+        /// </summary>
+        /// <param name="info">верхняя строка</param>
+        /// <param name="smallExit">условие выхода (что-то выбрано)</param>
+        /// <returns></returns>
         private static bool NewOrCreated(string info, ref bool smallExit)
         {
             // выбор (от него зависит, что выведет)
@@ -265,7 +308,7 @@ namespace Logic
                         }
                         else if (button == ConsoleKey.Enter)
                         {
-                            smallExit = true; // выход из 'малого' цикла
+                            smallExit = false; // выход из 'малого' цикла
                             return false;
                         }
                         break;
@@ -278,9 +321,10 @@ namespace Logic
             }
 
         }
+        #endregion
 
 
-
+        #region isCorrect_Date
         // правильная дата (~2 года)
         private static bool isCorrect_Date(out DateTime inputDateTime)
         {
@@ -315,22 +359,15 @@ namespace Logic
 
 
         }
+        #endregion
 
-
-
+        #region isCorrect Difference between FlyOut & FlyIn dates
         // проверка, что время полёта >18
         private static bool isCorrect_Difference(DateTime FlyOut_date, DateTime FlyIn_date)
         {
             if (FlyIn_date.Date < FlyOut_date.Date)
             {
                 Console.WriteLine("\nДата прилёта не может быть раньше даты вылета. Заполните поле снова.\n" +
-                                  "Нажмите любую клавишу, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else if (FlyIn_date.Hour <= FlyOut_date.Hour /*&& !(FlyIn_date.Date < FlyOut_date.Date)*/)
-            {
-                Console.WriteLine("\nВремя прилёта не может быть раньше времени вылета. Заполните поле снова.\n" +
                                   "Нажмите любую клавишу, чтобы продолжить...");
                 Console.ReadKey();
                 return false;
@@ -344,6 +381,21 @@ namespace Logic
 
                 if (hour > 0 && hour <= 18)
                     return true;
+                else if (hour < 1)
+                {
+                    Console.WriteLine("\nВремя полёта слишком короткое \n" +
+                                      "Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey(true);
+
+                    return false;
+                }
+                else if (FlyIn_date.Hour <= FlyOut_date.Hour )
+                {
+                     Console.WriteLine("\nВремя прилёта не может быть раньше времени вылета. Заполните поле снова.\n" +
+                                       "Нажмите любую клавишу, чтобы продолжить...");
+                     Console.ReadKey();
+                     return false;
+                }
                 else
                 {
                     Console.WriteLine("\nВремя полёта слишком большое \n" +
@@ -352,17 +404,16 @@ namespace Logic
 
                     return false;
                 }
+
             }
             
 
         }
+        #endregion
 
 
 
-
-
-
-
+        #region isCorrect_String (nul, lenght, illegSymb)
         /// <summary>
         /// проверка введённых данных на корректность
         /// </summary>
@@ -407,7 +458,9 @@ namespace Logic
                 return true;
 
         }
+        #endregion
 
+        #region isIllegalSymb
         /// <summary>
         /// проверка на запрещённые символы
         /// </summary>
@@ -428,8 +481,9 @@ namespace Logic
             }
             return true; // возвращает true, если "запрещённых" символов нет
         }
+        #endregion
 
 
-
+        
     }
 }

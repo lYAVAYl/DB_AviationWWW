@@ -43,18 +43,21 @@ namespace Logic
 
             while (!allright)
             {
+                
                 #region Добавление кода аэропорта
 
                 // вход в цикл, который проверяет корректно ли введены данные кода аэропорта
                 while (!exit)
                 {
                     Console.Clear(); // очистка консоли
+
                     Console.WriteLine("---> Добавление Аэропорта <---\n\n\n\n\n"); // вывод текста
 
                     Console.Write("Введите IATA код аэропорта: "); // что нужно ввести
 
                     exit = isCorrect(out code, 3, 3); // проверка на корректность
                     code = code.ToUpper(); // перевод в верхний регистр
+                    exit = exit & alreadyCreated(code, Airport_List); 
 
                 }
                 exit = false; // обновление условия цикла
@@ -122,7 +125,7 @@ namespace Logic
         /// <param name="minLenght">минимальная длина</param>
         /// <param name="maxLenght">максимальная длина</param>
         /// <returns></returns>
-        public static bool isCorrect(out string testingName, int minLenght=3, int maxLenght = 60)
+        public static bool isCorrect(out string testingName, int minLenght = 3, int maxLenght = 60)
         {
             testingName = Console.ReadLine(); // чтение введённой сроки
             testingName = testingName.Trim(); // удаление ненужных пробелов в начале и конце введённой строки
@@ -157,6 +160,8 @@ namespace Logic
             }
             else // все проверки пройдены успешно
                 return true;
+            
+
 
         }
 
@@ -265,10 +270,32 @@ namespace Logic
         #endregion
 
 
+        #region Аэропорт с таким кодом уже создан или нет
+        /// <summary>
+        /// есть ли такой код аэропорта
+        /// </summary>
+        /// <param name="air_code">код аэропорта</param>
+        /// <param name="Airports_List">список аэропортов</param>
+        /// <returns></returns>
+        public static bool alreadyCreated(string air_code, List<Airports> Airports_List)
+        {
+            foreach (Airports air in Airports_List)
+            {
+                if (air.Airport_Code == air_code)
+                {
+                    Console.WriteLine("\n\nАэропорт с таким кодом уже существует. Введите новый код.\n" +
+                                      "Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey(true);
+                    return false;
+                }
+            }
+            return true;
+        }
+        #endregion
 
 
-
-        public void PrintAirports(Airports airportFlyOut, Airports airportFlyIn)
+        // TODO: отшлефовать по красоте (готово)
+        public void PrintAirports(Airports airportFlyOut, Airports airportFlyIn) 
         {
             //   ╔ ╦ ╗ ╠ ╬ ╣ ╚ ╩ ╝ ═ ║
 
@@ -280,12 +307,21 @@ namespace Logic
                               " ║                                                      Таблица аэропортов                                                       ║\n" +
                               " ╠═════╦═══════════════════════════════════════════════════════╦═════════════════════════════════════════════════════════════════╣\n" +
                               " ║ Код ║                        Город                          ║                              Название                           ║\n" +
-                              " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣" ); 
-            
-            Console.WriteLine($" ║ {airportFlyOut.Airport_Code} ║   {airportFlyOut.Airport_City,50}  ║   {airportFlyOut.Airport_Name,60}  ║" +
-                               " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣\n ");
+                              " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣" );
 
-            Console.WriteLine($" ║ {airportFlyIn.Airport_Code} ║   {airportFlyIn.Airport_City,50}  ║   {airportFlyIn.Airport_Name,60}  ║" +
+            city_d -= airportFlyOut.Airport_City.Length;
+            name_d -= airportFlyOut.Airport_Name.Length;
+
+            Console.WriteLine($" ║ {airportFlyOut.Airport_Code} ║   {airportFlyOut.Airport_City}{new string(' ', city_d)}  ║   {airportFlyOut.Airport_Name}{new string(' ',name_d)}  ║\n" +
+                               " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
+
+            city_d = 50;
+            name_d = 60;
+
+            city_d -= airportFlyIn.Airport_City.Length;
+            name_d -= airportFlyIn.Airport_Name.Length;
+
+            Console.WriteLine($" ║ {airportFlyIn.Airport_Code} ║   {airportFlyIn.Airport_City}{new string(' ', city_d)}  ║   {airportFlyIn.Airport_Name}{new string(' ', name_d)}  ║\n" +
                                " ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
 
             var press = Console.ReadKey(true).Key;
@@ -310,8 +346,126 @@ namespace Logic
 
         }
 
+        
+        /// <summary>
+        /// Выбор созданного аэропорта
+        /// </summary>
+        /// <param name="FlyOut_ind">индекс аэропорта вылета</param>
+        /// <returns></returns>
+        public int ChooseCreatedAirport(int FlyOut_ind = -1 )
+        {
+            
+            int chosenAirport = 0;
+
+            int city_d;
+            int name_d;
+
+            while (true)
+            {
+                Console.Clear();
+
+                if(chosenAirport == FlyOut_ind)
+                {
+                    if (FlyOut_ind == 0)
+                        chosenAirport = 1;
+                    else if (FlyOut_ind == Airport_List.Count - 1)
+                        chosenAirport = FlyOut_ind - 1;
+                }
+
+                Console.WriteLine(" ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
+                                  " ║                                                      Таблица аэропортов                                                       ║\n" +
+                                  " ╠═════╦═══════════════════════════════════════════════════════╦═════════════════════════════════════════════════════════════════╣\n" +
+                                  " ║ Код ║                        Город                          ║                              Название                           ║");
+
+                for (int i = 0; i < Airport_List.Count ; i++)
+                {
+                    
+                    city_d = 50 - Airport_List[i].Airport_City.Length;
+                    name_d = 60 - Airport_List[i].Airport_Name.Length;
 
 
+                    if (FlyOut_ind != -1 && FlyOut_ind == i)
+                    {
+                        Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
+
+                        Console.Write(" ║ ");
+
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine("║");
+
+                    }
+                    else if (chosenAirport == i)
+                    {
+                        Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
+
+                        Console.Write(" ║ ");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine("║");
+
+                    }
+                    else
+                    {
+                        Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣\n" +
+                                     $" ║ {Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ║");
+
+                    }
+
+                }
+
+                Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
+
+
+                var button = Console.ReadKey().Key;
+                while(button != ConsoleKey.Enter && button != ConsoleKey.Escape && button != ConsoleKey.DownArrow && button != ConsoleKey.UpArrow)
+                {
+                    button = Console.ReadKey().Key;
+                }
+                switch (button)
+                {
+                    case ConsoleKey.Enter:
+                        return chosenAirport;
+                        break;
+
+                    case ConsoleKey.Escape:
+                        return -1;
+                        break;
+
+                    case ConsoleKey.DownArrow:
+                        if (chosenAirport < 19 && chosenAirport < Airport_List.Count-1)
+                        {
+                            if (++chosenAirport == FlyOut_ind)
+                                ++chosenAirport;
+                        }
+                           
+                        break;
+
+                    case ConsoleKey.UpArrow:
+                        if (chosenAirport > 0)
+                        {
+                            if (--chosenAirport == FlyOut_ind)
+                            {
+                                --chosenAirport;
+                            }
+                        }
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+
+            }
+            
+
+        }
 
     }
 }

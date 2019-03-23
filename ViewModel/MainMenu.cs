@@ -192,6 +192,18 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter: // выбор выделенного пункта меню
                     Console.Clear();
+                    if (airports.Airport_List.Count >= 2)
+                    {
+                        airports.PrintAirports(airports.Airport_List[airports.Airport_List.Count - 2], airports.Airport_List.Last());
+                        Console.WriteLine("\nАэропорт вылета (рейс): " + reises.Reises_List[0].Airport_FlyOut.Airport_Name);
+                         
+                    }
+
+
+
+
+                    else
+                        Console.WriteLine("Список не заполнен!");
                     Console.ReadKey();
                     break;
 
@@ -652,7 +664,7 @@ namespace ViewModel
 
 
 
-        // -----------------------------------------------------------------------------> НОРМАЛЬНАЯ ТАБЛИЦА АЭРОПОРТОВ + СДЕЛАТЬ СВЯЗКУ ТАБЛИЦ И ЗАПОЛНЕНИЕ ИХ + НОВЫЕ РЕЙСЫ
+        // ---------------------------------------> НОРМАЛЬНАЯ ТАБЛИЦА АЭРОПОРТОВ + СДЕЛАТЬ СВЯЗКУ ТАБЛИЦ И ЗАПОЛНЕНИЕ ИХ + НОВЫЕ РЕЙСЫ
 
         /// <summary>
         /// Вывод таблицы аэропортов
