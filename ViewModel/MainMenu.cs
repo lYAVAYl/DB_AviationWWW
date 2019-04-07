@@ -194,9 +194,7 @@ namespace ViewModel
                     Console.Clear();
                     if (airports.Airport_List.Count >= 2)
                     {
-                        airports.PrintAirports(airports.Airport_List[airports.Airport_List.Count - 2], airports.Airport_List.Last());
-                        Console.WriteLine("\nАэропорт вылета (рейс): " + reises.Reises_List[0].Airport_FlyOut.Airport_Name);
-                         
+                        reises.PrintReises();
                     }
 
 
@@ -650,7 +648,6 @@ namespace ViewModel
             return false;
         }
         #endregion
-
         /// <summary>
         /// Добавление аэропорта К
         /// </summary>

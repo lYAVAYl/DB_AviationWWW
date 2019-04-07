@@ -357,21 +357,21 @@ namespace Logic
             
             int chosenAirport = 0;
 
-            int city_d;
-            int name_d;
+            int city_d = 50; // длина строки названия города
+            int name_d = 60; // длина строки названия аэропорта
 
             while (true)
             {
                 Console.Clear();
 
-                if(chosenAirport == FlyOut_ind)
+                if(chosenAirport == FlyOut_ind) 
                 {
                     if (FlyOut_ind == 0)
                         chosenAirport = 1;
                     else if (FlyOut_ind == Airport_List.Count - 1)
                         chosenAirport = FlyOut_ind - 1;
                 }
-
+                // отрисовка списка аэропортов
                 Console.WriteLine(" ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
                                   " ║                                                      Таблица аэропортов                                                       ║\n" +
                                   " ╠═════╦═══════════════════════════════════════════════════════╦═════════════════════════════════════════════════════════════════╣\n" +
@@ -389,7 +389,7 @@ namespace Logic
                         Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
 
                         Console.Write(" ║ ");
-
+                        // закрасить выбранный ранее аэропорт в СИНИЙ
                         Console.BackgroundColor = ConsoleColor.DarkBlue;
                         Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
                         Console.ResetColor();
@@ -402,7 +402,7 @@ namespace Logic
                         Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
 
                         Console.Write(" ║ ");
-
+                        // выделение аэропортов, по которым скачет пользователь (ЖЁЛТЫЙ)
                         Console.BackgroundColor = ConsoleColor.DarkYellow;
                         Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
                         Console.ResetColor();
@@ -410,7 +410,7 @@ namespace Logic
                         Console.WriteLine("║");
 
                     }
-                    else
+                    else // не выбранные аэропорта (не закрашиваются)
                     {
                         Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣\n" +
                                      $" ║ {Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ║");
@@ -422,34 +422,34 @@ namespace Logic
                 Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
 
 
-                var button = Console.ReadKey().Key;
+                var button = Console.ReadKey().Key; // нажатая клавиша
                 while(button != ConsoleKey.Enter && button != ConsoleKey.Escape && button != ConsoleKey.DownArrow && button != ConsoleKey.UpArrow)
                 {
-                    button = Console.ReadKey().Key;
+                    button = Console.ReadKey().Key; // если не разрешена, то нажимать ещё
                 }
                 switch (button)
                 {
-                    case ConsoleKey.Enter:
+                    case ConsoleKey.Enter: // выбор
                         return chosenAirport;
                         break;
 
-                    case ConsoleKey.Escape:
+                    case ConsoleKey.Escape: // выход
                         return -1;
                         break;
 
-                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.DownArrow: // вниз
                         if (chosenAirport < 19 && chosenAirport < Airport_List.Count-1)
                         {
-                            if (++chosenAirport == FlyOut_ind)
+                            if (++chosenAirport == FlyOut_ind && Airport_List.Count - 1 != FlyOut_ind) // перепрыгиваем через выбранный аэропорт
                                 ++chosenAirport;
                         }
                            
                         break;
 
-                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.UpArrow: // вверх
                         if (chosenAirport > 0)
                         {
-                            if (--chosenAirport == FlyOut_ind)
+                            if (--chosenAirport == FlyOut_ind && FlyOut_ind!=0) // перепрыгиваем через выбранный аэропорт
                             {
                                 --chosenAirport;
                             }

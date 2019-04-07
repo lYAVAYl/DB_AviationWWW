@@ -13,10 +13,7 @@ namespace ViewModel
         {
             MainMenu mainMenu = new MainMenu();
             mainMenu.Menu();
-            //var aa = new Airports();
-            //aa.Airport_Adding();
-            //var kk = new Prices();
-            //kk.AddPriceForReis();
+            
             
         }
     }
