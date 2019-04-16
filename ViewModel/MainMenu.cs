@@ -18,7 +18,7 @@ namespace ViewModel
         /*
            "1. Ввод данных \n" +
            "2. Вывод таблицы на экран \n" +
-           "3. Удаление \n" +
+           "3. Удаление \n" +-
            "4. Редактировать \n" +
            "5. Поиск \n" +
            "6. Сортировка \n" +
@@ -194,15 +194,13 @@ namespace ViewModel
                     Console.Clear();
                     if (airports.Airport_List.Count >= 2)
                     {
-                        reises.PrintReises();
+                        reises.PrintReises(airports, prices);
                     }
-
-
-
-
                     else
+                    {
                         Console.WriteLine("Список не заполнен!");
-                    Console.ReadKey();
+                        Console.ReadKey();
+                    }
                     break;
 
                 case ConsoleKey.Escape: // выход из проги
@@ -262,8 +260,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    Console.WriteLine("Выбран вариант 3!");
-                    Console.ReadKey();
+                    reises.DeleteInfo(airports, prices);
                     break;
 
                 case ConsoleKey.Escape:
@@ -323,8 +320,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    Console.WriteLine("Выбран вариант 3!");
-                    Console.ReadKey();
+                    reises.RedactInfo(airports, prices);
                     break;
 
                 case ConsoleKey.Escape:

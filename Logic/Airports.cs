@@ -55,9 +55,11 @@ namespace Logic
 
                     Console.Write("Введите IATA код аэропорта: "); // что нужно ввести
 
-                    exit = isCorrect(out code, 3, 3); // проверка на корректность
+                    code = Console.ReadLine(); // ввода кода аэропорта
+                    exit = code.isCorrectIATA(3, 3); // проверка на корректность
+
                     code = code.ToUpper(); // перевод в верхний регистр
-                    exit = exit & alreadyCreated(code, Airport_List); 
+                    exit = exit && alreadyCreated(code, Airport_List); 
 
                 }
                 exit = false; // обновление условия цикла
@@ -72,7 +74,10 @@ namespace Logic
                     Console.WriteLine("IATA код аэропорта: " + code + "\n\n\n"); // что нужно ввести
 
                     Console.Write("Введите город аэропорта: ");
-                    exit = isCorrect(out city, 3, 50); // проверка на корректность
+
+                    city = Console.ReadLine(); // ввод города аэропорта
+                    city = city.Trim();
+                    exit = city.isCorrectString(3, 50); // проверка на корректность
                 }
                 exit = false; // обновление условия цикла
                 #endregion
@@ -87,7 +92,10 @@ namespace Logic
                     Console.WriteLine("Город аэропорта: " + city + "\n\n");
 
                     Console.Write("Введите название аэропорта: ");
-                    exit = isCorrect(out name, 3, 60); // проверка на корректность
+
+                    name = Console.ReadLine(); // ввод названия аэропорта
+                    name = name.Trim();
+                    exit = name.isCorrectString(3, 60); // проверка на корректность
                 }
                 exit = false; // обновление условия цикла
                 #endregion
@@ -95,179 +103,28 @@ namespace Logic
                 //------------------------------
 
                 #region Подтверждение введённых данных
-                bool apply = false;
-                while (!apply) // цикл отображения таблички
-                {
-                    Console.Clear();
-                    Console.WriteLine();
 
-                    AreUSure("---> Добавление Аэропорта <---\n" +
-                             "\nIATA код аэропорта: " + code +
-                             "\nГород аэропорта: " + city +
-                             "\nНазвание аэропорта: " + name + "\n\n", 
-                             ref allright, ref apply);
-                }
+                Console.Clear();
+                Console.WriteLine();
+
+                allright = allright.AreUSure("---> Добавление Аэропорта <---\n" +
+                                             "\nIATA код аэропорта: " + code +
+                                             "\nГород аэропорта: " + city +
+                                             "\nНазвание аэропорта: " + name + "\n\n");
+                
                 #endregion
 
             }
             // добавление нового аэропорта в список 
-            Airport_List.Add(new Airports { Airport_Code = code, Airport_City = city, Airport_Name = name });
+            Airport_List.Add(new Airports {
+                                            Airport_Code = code,
+                                            Airport_City = city,
+                                            Airport_Name = name
+                                          });
         }
 
 
-        // isCorrect
-        #region Проверка введённой строки на корректность
-
-        /// <summary>
-        /// проверка введённых данных на корректность
-        /// </summary>
-        /// <param name="testingName">строка для проверки</param>
-        /// <param name="minLenght">минимальная длина</param>
-        /// <param name="maxLenght">максимальная длина</param>
-        /// <returns></returns>
-        public static bool isCorrect(out string testingName, int minLenght = 3, int maxLenght = 60)
-        {
-            testingName = Console.ReadLine(); // чтение введённой сроки
-            testingName = testingName.Trim(); // удаление ненужных пробелов в начале и конце введённой строки
-
-            if (string.IsNullOrWhiteSpace(testingName)) // пустая
-            {
-                Console.WriteLine("\n\nПоле не заполнено! Заполните поле.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else if (!IsIllegalSymb(testingName)) // есть ли запрещённые символы
-            {
-                Console.WriteLine("\n\nВведённая строка содержит запрещённые символы. Заполните поле снова.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else if (testingName.Length < minLenght) // меньше минимальной длины
-            {
-                Console.WriteLine("\n\nВведённая строка слишком короткая. Заполните поле снова.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else if (testingName.Length > maxLenght) // больше максимальной длины
-            {
-                Console.WriteLine("\n\nВведённая строка слишком длинная. Заполните поле снова.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else // все проверки пройдены успешно
-                return true;
-            
-
-
-        }
-
-        #endregion
-
-
-
-        // isIllegalSymbol
-        #region Метод проверки на наличие "запрещённых символов" в строке
-        private static bool IsIllegalSymb(string test) // передача строки в метод
-        {
-            string illegalChars = "1234567890!@\"#$%^&*_+=:;<>!?\\/|[]{}\t"; // "запрещённые" символы
-
-            foreach (char c in test) // берём символ из строки
-            {
-                foreach (char illegal in illegalChars) // берём символ из "запрещённых" символов
-                {
-                    if (c == illegal) // сравниваем
-                        return false; // возвращает false, если в строке есть "запрещённый" символ
-                }
-            }
-            return true; // возвращает true, если "запрещённых" символов нет
-        }
-        #endregion
-
-        // AreUSure
-        #region Вы уверены?
-
-        /// <summary>
-        /// Вы уверены, что всё ввели верно?
-        /// </summary>
-        /// <param name="info">выводит переданный текст</param>
-        /// <param name="bigExit">условие выхода из цикла, который отвечает за изменение отображения таблички</param>
-        /// <param name="smallExit">условие выхода из цикла, ответственного за добавление элемента</param>
-        public static void AreUSure(string info, ref bool bigExit, ref bool smallExit)
-        {
-            // выбор (от него зависит, что выведет)
-            byte myChoise = 1;
-            while (true) // цикл отображения ДА / НЕТ
-            {
-                Console.Clear();
-                Console.WriteLine(info);
-                Console.WriteLine("Вы уверены, что всё ввели верно?");
-                switch (myChoise) // что вывести в зависимости от значения myChoise
-                {
-                    #region ДА
-                    case 1: //------------------------------------------------ выделяем вариант ДА
-                        Console.Write("   ");
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
-                        Console.Write(" ДА ");
-                        Console.ResetColor();
-                        Console.WriteLine(" |  НЕТ"); //---------------------- всё покрасилось красиво
-
-                        var button = Console.ReadKey(true).Key; // чтение клавиши и проверка на корректность
-                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow)
-                        {
-                            button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
-                        }
-
-                        if (button == ConsoleKey.RightArrow || button == ConsoleKey.LeftArrow) // если <-|-> то
-                        {
-                            myChoise = 2; // выделяем вариант НЕТ
-                        }
-                        else if (button == ConsoleKey.Enter)
-                        {
-                            bigExit = true; // выход из 'большого' цикла
-                            smallExit = true; // выход из 'малого' цикла
-                            return;
-                        }
-                        break;
-                    #endregion
-
-                    #region НЕТ
-                    case 2:
-                        Console.Write("    ДА  | ");//------------------------ выделяем вариант НЕТ
-                        Console.BackgroundColor = ConsoleColor.DarkRed;
-                        Console.WriteLine(" НЕТ ");
-                        Console.ResetColor();//------------------------------- всё покрасилось красиво
-
-                        button = Console.ReadKey(true).Key; // чтение клавиши + проверка
-                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow)
-                        {
-                            button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
-                        }
-
-                        if (button == ConsoleKey.RightArrow || button == ConsoleKey.LeftArrow) // если <-|->, то 
-                        {
-                            myChoise = 1; // переходим на вариант ДА
-                        }
-                        else if (button == ConsoleKey.Enter)
-                        {
-                            bigExit = false; // выход из 'большого' цикла
-                            smallExit = true; // выход из 'малого' цикла
-                            return;
-                        }
-                        break;
-                    #endregion
-
-                    default:
-                        break;
-                }
-
-            }
-
-        }
-        #endregion
+        
 
 
         #region Аэропорт с таким кодом уже создан или нет
@@ -311,7 +168,7 @@ namespace Logic
 
             city_d -= airportFlyOut.Airport_City.Length;
             name_d -= airportFlyOut.Airport_Name.Length;
-
+         
             Console.WriteLine($" ║ {airportFlyOut.Airport_Code} ║   {airportFlyOut.Airport_City}{new string(' ', city_d)}  ║   {airportFlyOut.Airport_Name}{new string(' ',name_d)}  ║\n" +
                                " ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
 
@@ -329,22 +186,7 @@ namespace Logic
             {
                 press = Console.ReadKey(true).Key;
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+         }
 
         
         /// <summary>
@@ -359,6 +201,9 @@ namespace Logic
 
             int city_d = 50; // длина строки названия города
             int name_d = 60; // длина строки названия аэропорта
+
+            int start_point = 0;
+            int end_point = 3;
 
             while (true)
             {
@@ -377,7 +222,8 @@ namespace Logic
                                   " ╠═════╦═══════════════════════════════════════════════════════╦═════════════════════════════════════════════════════════════════╣\n" +
                                   " ║ Код ║                        Город                          ║                              Название                           ║");
 
-                for (int i = 0; i < Airport_List.Count ; i++)
+                int i = start_point;
+                while (((i + 1) % end_point > 0) && (i < Airport_List.Count))
                 {
                     
                     city_d = 50 - Airport_List[i].Airport_City.Length;
@@ -417,9 +263,53 @@ namespace Logic
 
                     }
 
+                    i++;
+
                 }
 
-                Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
+                if ((i + 1) % end_point == 0 && (i < Airport_List.Count))
+                {
+                    city_d = 50 - Airport_List[i].Airport_City.Length;
+                    name_d = 60 - Airport_List[i].Airport_Name.Length;
+
+
+                    if (FlyOut_ind != -1 && FlyOut_ind == i)
+                    {
+                        Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
+
+                        Console.Write(" ║ ");
+                        // закрасить выбранный ранее аэропорт в СИНИЙ
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine("║");
+
+                    }
+                    else if (chosenAirport == i)
+                    {
+                        Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
+
+                        Console.Write(" ║ ");
+                        // выделение аэропортов, по которым скачет пользователь (ЖЁЛТЫЙ)
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine("║");
+
+                    }
+                    else // не выбранные аэропорта (не закрашиваются)
+                    {
+                        Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣\n" +
+                                     $" ║ {Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ║");
+
+                    }
+
+                    i++;
+                }
+
+                    Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
 
 
                 var button = Console.ReadKey().Key; // нажатая клавиша
@@ -438,22 +328,76 @@ namespace Logic
                         break;
 
                     case ConsoleKey.DownArrow: // вниз
-                        if (chosenAirport < 19 && chosenAirport < Airport_List.Count-1)
+                        ++chosenAirport;
+
+                        if ((chosenAirport % end_point == 0) && (chosenAirport < Airport_List.Count))
                         {
-                            if (++chosenAirport == FlyOut_ind && Airport_List.Count - 1 != FlyOut_ind) // перепрыгиваем через выбранный аэропорт
-                                ++chosenAirport;
+                            start_point += end_point;
                         }
+
+                        if (chosenAirport == Airport_List.Count)
+                        {
+                            chosenAirport = 0;
+                            start_point = 0;
+                        }
+
+                        if (chosenAirport == FlyOut_ind && FlyOut_ind != Airport_List.Count-1)
+                        {
+                            ++chosenAirport;
+                        }
+                        else if (chosenAirport == FlyOut_ind && FlyOut_ind == Airport_List.Count-1)
+                        {
+                            chosenAirport = 0;
+                            start_point = 0;
+                        }
+
+                        //if (chosenAirport < 19 && chosenAirport < Airport_List.Count-1)
+                        //{
+                        //    if (++chosenAirport == FlyOut_ind && Airport_List.Count - 1 != FlyOut_ind) // перепрыгиваем через выбранный аэропорт
+                        //        ++chosenAirport;
+                        //}
                            
                         break;
 
                     case ConsoleKey.UpArrow: // вверх
-                        if (chosenAirport > 0)
+                        --chosenAirport;
+
+                        if (chosenAirport < 0)
                         {
-                            if (--chosenAirport == FlyOut_ind && FlyOut_ind!=0) // перепрыгиваем через выбранный аэропорт
+                            chosenAirport = Airport_List.Count - 1;
+                            start_point = (Airport_List.Count - 1) - ((Airport_List.Count - 1) % end_point);
+
+                            if (chosenAirport == FlyOut_ind && FlyOut_ind == Airport_List.Count - 1)
                             {
-                                --chosenAirport;
+                                chosenAirport = Airport_List.Count - 2;
                             }
                         }
+                        else if ((chosenAirport + 1) % end_point == 0)
+                        {
+                            start_point -= end_point;
+                        }
+
+                        if (chosenAirport == FlyOut_ind && FlyOut_ind != 0)
+                        {
+                            --chosenAirport;
+                            start_point -= end_point;
+                        }
+                        else if (chosenAirport == FlyOut_ind && FlyOut_ind == 0)
+                        {
+                            chosenAirport = Airport_List.Count - 1;
+                        }
+                        
+
+
+
+
+                        //if (chosenAirport > 0)
+                        //{
+                        //    if (--chosenAirport == FlyOut_ind && FlyOut_ind!=0) // перепрыгиваем через выбранный аэропорт
+                        //    {
+                        //        --chosenAirport;
+                        //    }
+                        //}
 
                         break;
 

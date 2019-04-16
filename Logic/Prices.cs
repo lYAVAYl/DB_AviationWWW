@@ -14,27 +14,27 @@ namespace Logic
         /// <summary>
         /// код рейса
         /// </summary>
-        public string ReisCode { get; set; }
+        public int? ReisCode { get; set; }
 
         /// <summary>
         /// Кол-во мест бизнес класса (коды)
         /// </summary>
-        public int BuisnessClass_Num { get; set; }
+        public int? BuisnessClass_Num { get; set; }
 
         /// <summary>
         /// Цена за место - Бизнес
         /// </summary>
-        public int BuisnessClass_Price { get; set; }
+        public int? BuisnessClass_Price { get; set; }
 
         /// <summary>
         /// Кол-во мест эконом класса (коды)
         /// </summary>
-        public int EconomClass_Num { get; set; }
+        public int? EconomClass_Num { get; set; }
 
         /// <summary>
         /// Цена за место - Эконом
         /// </summary>
-        public int EconomClass_Price { get; set; }
+        public int? EconomClass_Price { get; set; }
 
 
         public List<Prices> Prices_List = new List<Prices>();
@@ -48,8 +48,13 @@ namespace Logic
         public void AddPriceForReis()
         { 
             // изначальные значения локальных переменных
-            string reisCode = ""; 
-            int buisnessClass_Num = 0, buisnessClass_Price = 0, economClass_Num = 0, economClass_Price = 0;
+            string input = "";
+
+            int reisCode = 0, 
+                buisnessClass_Num = 0, 
+                buisnessClass_Price = 0, 
+                economClass_Num = 0, 
+                economClass_Price = 0;
 
             bool exit = false, allright = false; 
 
@@ -63,28 +68,28 @@ namespace Logic
                     Console.WriteLine("---> Добавление стоимости билетов <---\n\n\n\n\n\n\n\n"); // вывод текста
 
                     Console.Write("Введите код рейса: ");
-                    reisCode = Console.ReadLine();
-                    reisCode = reisCode.Trim();
+                    input = Console.ReadLine();
+                    input = input.Trim();
 
-                    if (string.IsNullOrWhiteSpace(reisCode)) // проверка на корректность введённых данных
+                    if (string.IsNullOrWhiteSpace(input)) // проверка на корректность введённых данных
                     {
                         Console.WriteLine("\n\nПоле кода рейса не заполнено. Введите 3 цифры! \n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
                         Console.ReadKey();
                     }
-                    else if (reisCode.Length > 3)
+                    else if (input.Length > 3)
                     {
                         Console.WriteLine("\n\nКод рейса слишком длинный. Введите 3 цифры! \n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
                         Console.ReadKey();
                     }
-                    else if (reisCode.Length < 3)
+                    else if (input.Length < 3)
                     {
                         Console.WriteLine("\n\nКод рейса слишком короткий. Введите 3 цифры! \n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
                         Console.ReadKey();
                     }
-                    else if (!IsCorrectCode(reisCode))
+                    else if (!int.TryParse(input, out reisCode))
                     {
                         Console.WriteLine("\n\nВ коде присутствуют символы запрещённые символы. Введите 3 цифры! \n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
@@ -95,9 +100,7 @@ namespace Logic
                         if (Prices_List.Count != 0) // если список кодов НЕ пуст
                         {
                             if (!alreadyCreated(reisCode, Prices_List)) // смотрим, есть ли уже такой код или нет
-                            {
-                                exit = true; // если нет, то ливаем и идём дальше
-                            }
+                                exit = true; // если нет, то выходим и идём дальше
                             else // если да, выводим сообщение
                             {
                                 Console.WriteLine("\n\nРейс с таким кодом уже существует! Заполните поле заново.\n" +
@@ -122,7 +125,7 @@ namespace Logic
                     Console.WriteLine("Код рейса: "+reisCode+ "\n\n\n\n\n\n");
                     Console.Write("Введите кол-во мест Бизнес-Класса: ");
 
-                    buisnessClass_Num = CXC(500, ref exit);
+                    buisnessClass_Num = AddPlacesPrices(500, ref exit);
                 }
                 exit = false;
                 #endregion
@@ -137,13 +140,13 @@ namespace Logic
 
                     Console.Write("Введите цену за место в Бизнес-Классе (руб): ");
 
-                    buisnessClass_Price = CXC(2000000, ref exit);
+                    buisnessClass_Price = AddPlacesPrices(2000000, ref exit);
 
                 }
                 exit = false;
                 #endregion
 
-                #region Кол-во месть Эконом-Класса
+                #region Кол-во мест Эконом-Класса
                 while (!exit)
                 {
                     Console.Clear(); // очистка консоли
@@ -154,7 +157,7 @@ namespace Logic
 
                     Console.Write("Введите количество мест Эконом-Класса: ");
 
-                    economClass_Num = CXC(500, ref exit);
+                    economClass_Num = AddPlacesPrices(500, ref exit);
 
                 }
                 exit = false;
@@ -172,7 +175,7 @@ namespace Logic
 
                     Console.Write("Введите цену за место в Эконом-Классе: ");
 
-                    economClass_Price = CXC(2000000, ref exit);
+                    economClass_Price = AddPlacesPrices(2000000, ref exit);
 
                 }
                 exit = false;
@@ -181,19 +184,16 @@ namespace Logic
                 //-------------------------------------------
 
                 #region Вы уверены, что ввели верные данные? ДА/НЕТ
-                bool apply = false;
-                while (!apply) // цикл отображения информации
-                {
-                    Airports.AreUSure("---> Добавление стоимости билетов <---\n" +
-                                     "\nКод рейса: " + reisCode +
-                                     "\nКоличество мест в Бизнес-Классе: " + buisnessClass_Num +
-                                     "\nЦена за место в Бизнес-Классе: " + buisnessClass_Price +
-                                     "\nКоличество мест Эконом-Класса: " + economClass_Num +
-                                     "\nЦена за место в Эконом-Классе: " + economClass_Price + "\n\n", 
-                                     ref allright, ref apply);
-                }
+
+                allright = allright.AreUSure("---> Добавление стоимости билетов <---\n" +
+                                             "\nКод рейса: " + reisCode +
+                                             "\nКоличество мест в Бизнес-Классе: " + buisnessClass_Num +
+                                             "\nЦена за место в Бизнес-Классе: " + buisnessClass_Price +
+                                             "\nКоличество мест Эконом-Класса: " + economClass_Num +
+                                             "\nЦена за место в Эконом-Классе: " + economClass_Price + "\n\n");
                 #endregion
             }
+
             Prices_List.Add(new Prices
             {
                 ReisCode = reisCode,
@@ -205,31 +205,7 @@ namespace Logic
         }
         #endregion
 
-
-        // IsCorrect
-        #region Метод проверки на наличие "разрешённых символов" в строке
-
-        /// <summary>
-        /// Правильно и введён код?
-        /// </summary>
-        /// <param name="test">Введённый код</param>
-        /// <returns></returns>
-        private static bool IsCorrectCode(string test) // передача строки в метод
-        {
-            string legal = "1234567890"; // "разрешённые" символы
-
-            bool ok = true; // верно или нет (по дефолту да)
-            foreach(char c in test) // проверка, каждого символа из test на его наличие в списке 'разрешённых'
-            {
-                ok = legal.Contains(c); 
-                if (ok == false)
-                    break;
-            }
-            
-            return ok; // возвращает true, если "запрещённых" символов нет
-        }
-        #endregion
-
+        
         // alreadyCreated
         #region Существует ли такой код рейса или нет
 
@@ -239,14 +215,12 @@ namespace Logic
         /// <param name="reisCode">Введённый код</param>
         /// <param name="priceList">Список кодов</param>
         /// <returns></returns>
-        private static bool alreadyCreated(string reisCode, List<Prices> priceList)
+        private static bool alreadyCreated(int number, List<Prices> priceList)
         {
             foreach (Prices pp in priceList)
             {
-                if (pp.ReisCode == reisCode)
-                {
+                if (pp.ReisCode == number)
                     return true;
-                }
             }
             return false;
         }
@@ -261,7 +235,7 @@ namespace Logic
         /// <param name="maxNum">Максимальное число</param>
         /// <param name="exit">условие выхода из внешнего цикла</param>
         /// <returns></returns>
-        private int CXC(int maxNum, ref bool exit)
+        private int AddPlacesPrices(int maxNum, ref bool exit)
         {
             int answer; // это вернётся, если всё ок
             string inpit = Console.ReadLine(); // строка, чтобы её преобразовать в int
@@ -303,6 +277,26 @@ namespace Logic
             }
         }
         #endregion
+
+
+        public void PrintPrice(Prices price)
+        {
+            Console.WriteLine("╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
+                              "║                                                      Таблица цен рейса                                              ║\n" +
+                              "╠═══════════╦══════════════════════════╦═════════════════════════╦══════════════════════════╦═════════════════════════╣\n" +
+                              "║ Код рейса ║ Код кресла Бизнес-класса ║ Стоимость Бизнес-класса ║ Код кресла Эконом-класса ║ Стоимость Эконом-класса ║\n" + 
+                              "╠═══════════╬══════════════════════════╬═════════════════════════╬══════════════════════════╬═════════════════════════╣");
+           Console.WriteLine($"║    {price.ReisCode}{new string (' ', 7- price.ReisCode.ToString().Length)}║         000-{price.BuisnessClass_Num:000}{new string (' ', 10)}║          {price.BuisnessClass_Price}p.{new string (' ', 12 - price.BuisnessClass_Price.ToString().Length)} ║         {price.BuisnessClass_Num:000}-{price.BuisnessClass_Num + price.EconomClass_Num:000}{new string(' ', 10)}║          {price.EconomClass_Price}p.{new string(' ', 12 - price.EconomClass_Price.ToString().Length)} ║");
+            Console.WriteLine("╚═══════════╩══════════════════════════╩═════════════════════════╩══════════════════════════╩═════════════════════════╝\n");
+
+            var press = Console.ReadKey(true).Key;
+            while (press != ConsoleKey.Escape)
+            {
+                press = Console.ReadKey(true).Key;
+            }
+        }
+
+
 
     }
 }

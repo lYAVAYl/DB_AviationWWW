@@ -25,6 +25,10 @@ namespace Logic
         public List<Reises> Reises_List = new List<Reises>();
 
 
+        // =============================================================================
+
+        // Добавление рейса
+        #region AddReise
         public void AddReise(Airports airports, Prices prices)
         {
             // Аэропорт вылета:    новый | существующий
@@ -38,11 +42,16 @@ namespace Logic
             // Марка самолёта: уникальный
 
             int FlyIn_ind=0, FlyOut_ind=0;
+            bool isNewAirportFlyOut = false;
+            bool isNewAirportFlyIn = false;
+
             DateTime FlyOut_data = new DateTime();
             DateTime FlyIn_data = new DateTime();
+
             string planemark="";
             bool rightData = false;
             bool allright = false, exit = false;
+
 
 
             while (!allright)
@@ -55,6 +64,7 @@ namespace Logic
                     {
                         airports.Airport_Adding(); // предпоследний в списке (predposl)
                         FlyOut_ind = airports.Airport_List.Count - 1;
+                        isNewAirportFlyOut = true;
                     }
                     else
                     {
@@ -89,7 +99,9 @@ namespace Logic
                     {
                         airports.Airport_Adding(); // предпоследний в списке (predposl)
                         FlyIn_ind = airports.Airport_List.Count - 1;
-                    }                    
+                        isNewAirportFlyIn = true;
+
+                    }
                     else
                     {
                         if (airports.Airport_List.Count >= 2)
@@ -206,8 +218,22 @@ namespace Logic
                                       $"Дата прилёта: {FlyIn_data.Day:00}.{FlyIn_data.Month:00}.{FlyIn_data.Year}   {FlyIn_data.Hour:00}:{FlyIn_data.Minute:00}\n");
 
                     Console.Write("Марка самолёта: ");
-                    exit = isCorrect_String(out planemark);
 
+                    planemark = Console.ReadLine();
+                    planemark = planemark.Trim();
+                    if (planemark.isCorrectPlaneMark())
+                    {
+                        Console.Clear();
+
+                        exit = exit.AreUSure("---> Добавление Рейса <---\n\n" +
+                                                     "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 2].Airport_Name + "\n" +
+                                                     "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n" +
+                                                     "Код рейса: " + prices.Prices_List.Last().ReisCode + "\n" +
+                                                     $"Дата вылета: {FlyOut_data.Day}.{FlyOut_data.Month}.{FlyOut_data.Year}   {FlyOut_data.Hour}:{FlyOut_data.Minute}\n" +
+                                                     $"Дата прилёта: {FlyIn_data.Day}.{FlyIn_data.Month}.{FlyIn_data.Year}   {FlyIn_data.Hour}:{FlyIn_data.Minute}\n" +
+                                                     "\nМарка самолёта: " + planemark + "\n\n", "Вы уверены, что верно ввели марку самолёта?");
+                    }
+                                   
                 }
                 exit = false;
                 #endregion
@@ -216,21 +242,30 @@ namespace Logic
                 //-----------------------------------------------------------------------------------------------------------------------------------------------
 
                 #region Подтверждение ввода
-                bool apply = false;
-                while (!apply) // цикл отображения таблички
+               
+                Console.Clear();
+                Console.WriteLine();
+                allright = allright.AreUSure("---> Добавление Рейса <---\n\n" +
+                                             "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 2].Airport_Name + "\n" +
+                                             "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n" +
+                                             "Код рейса: " + prices.Prices_List.Last().ReisCode + "\n" +
+                                             $"Дата вылета: {FlyOut_data.Day}.{FlyOut_data.Month}.{FlyOut_data.Year}   {FlyOut_data.Hour}:{FlyOut_data.Minute}\n" +
+                                             $"Дата прилёта: {FlyIn_data.Day}.{FlyIn_data.Month}.{FlyIn_data.Year}   {FlyIn_data.Hour}:{FlyIn_data.Minute}\n" +
+                                             "Марка самолёта: " + planemark + "\n\n");
+                if (!allright)
                 {
-                    Console.Clear();
-                    Console.WriteLine();
-                    Airports.AreUSure("---> Добавление Рейса <---\n\n" +
-                                      "Аэропорт вылета: " + airports.Airport_List[airports.Airport_List.Count - 2].Airport_Name + "\n" +
-                                      "Аэропорт прилёта: " + airports.Airport_List.Last().Airport_Name + "\n" +
-                                      "Код рейса: " + prices.Prices_List.Last().ReisCode + "\n" +
-                                      $"Дата вылета: {FlyOut_data.Day}.{FlyOut_data.Month}.{FlyOut_data.Year}   {FlyOut_data.Hour}:{FlyOut_data.Minute}\n" +
-                                      $"Дата прилёта: {FlyIn_data.Day}.{FlyIn_data.Month}.{FlyIn_data.Year}   {FlyIn_data.Hour}:{FlyIn_data.Minute}\n" +
-                                      "Марка самолёта: " + planemark + "\n\n",
-                                      ref allright, ref apply);
+                    if (isNewAirportFlyOut && isNewAirportFlyIn)
+                    {
+                        airports.Airport_List.RemoveAt(airports.Airport_List.Count - 1);
+                        airports.Airport_List.RemoveAt(airports.Airport_List.Count - 1);
+                    }
+                    else if (isNewAirportFlyOut || isNewAirportFlyIn)
+                    {
+                        airports.Airport_List.RemoveAt(airports.Airport_List.Count - 1);
+                    }
+                                       
+                    prices.Prices_List.RemoveAt(prices.Prices_List.Count - 1);
                 }
-
             }
             exit = false;
             #endregion
@@ -244,7 +279,7 @@ namespace Logic
                                         ,PlaneMark = planemark});            
 
         }
-
+        #endregion
 
 
 
@@ -328,9 +363,8 @@ namespace Logic
         }
         #endregion
 
-
+        // Проверка даты на корректность (+- 2 года от текущей даты)
         #region isCorrect_Date
-        // правильная дата (~2 года)
         private static bool isCorrect_Date(out DateTime inputDateTime)
         {
             try
@@ -366,27 +400,28 @@ namespace Logic
         }
         #endregion
 
+
+        // разница во времени между датой вылета и прилёта (макс. вермя полёта - 18 часов)
         #region isCorrect Difference between FlyOut & FlyIn dates
-        // проверка, что время полёта >18
         private static bool isCorrect_Difference(DateTime FlyOut_date, DateTime FlyIn_date)
         {
-            if (FlyIn_date.Date < FlyOut_date.Date)
+            if (FlyIn_date.Date < FlyOut_date.Date) // дата прилёта раньше даты вылета
             {
                 Console.WriteLine("\nДата прилёта не может быть раньше даты вылета. Заполните поле снова.\n" +
                                   "Нажмите любую клавишу, чтобы продолжить...");
                 Console.ReadKey();
                 return false;
             }
-            else
+            else // дата прилёта позже даты вылета
             {
-                var difference = FlyIn_date - FlyOut_date;
-                DateTime dima = new DateTime(difference.Ticks);
+                var DifferenceInTime = FlyIn_date - FlyOut_date; // разница между вылетом и прилётом
+                DateTime DIfferenceDate = new DateTime(DifferenceInTime.Ticks); // преобразование разницы в экземпляр DateTime
 
-                int hour = dima.Hour;
+                int hour = DIfferenceDate.Hour; // разница в часах
 
-                if (hour > 0 && hour <= 18)
+                if (hour > 0 && hour <= 18) // время полёта 1-18 часов (верно)
                     return true;
-                else if (hour < 1)
+                else if (hour < 1) // время полёта <1 часа
                 {
                     Console.WriteLine("\nВремя полёта слишком короткое \n" +
                                       "Нажмите любую клавишу, чтобы продолжить...");
@@ -394,7 +429,7 @@ namespace Logic
 
                     return false;
                 }
-                else if (FlyIn_date.Hour <= FlyOut_date.Hour )
+                else if (FlyIn_date.Hour <= FlyOut_date.Hour ) // время прилёта 
                 {
                      Console.WriteLine("\nВремя прилёта не может быть раньше времени вылета. Заполните поле снова.\n" +
                                        "Нажмите любую клавишу, чтобы продолжить...");
@@ -416,118 +451,137 @@ namespace Logic
         }
         #endregion
 
+        // =============================================================================
 
 
-        #region isCorrect_String (nul, lenght, illegSymb)
-        /// <summary>
-        /// проверка введённых данных на корректность
-        /// </summary>
-        /// <param name="testingName">строка для проверки</param>
-        /// <param name="minLenght">минимальная длина</param>
-        /// <param name="maxLenght">максимальная длина</param>
-        /// <returns></returns>
-        public static bool isCorrect_String(out string testingName, int minLenght = 3, int maxLenght = 30)
+
+
+        // =============================================================================
+        // Вывод таблицы
+        #region PrintReises
+        public void PrintReises(Airports airports, Prices prices)
         {
-            testingName = Console.ReadLine(); // чтение введённой сроки
-            testingName = testingName.Trim(); // удаление ненужных пробелов в начале и конце введённой строки
+            bool exit = false;
+            int start_point = 0;
+            int end_point = 2;
 
-            if (string.IsNullOrWhiteSpace(testingName)) // пустая
-            {
-                Console.WriteLine("\n\nПоле не заполнено! Заполните поле.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else if (!IsIllegalSymb(testingName)) // есть ли запрещённые символы
-            {
-                Console.WriteLine("\n\nВведённая строка содержит запрещённые символы. Заполните поле снова.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else if (testingName.Length < minLenght) // меньше минимальной длины
-            {
-                Console.WriteLine("\n\nВведённая строка слишком короткая. Заполните поле снова.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else if (testingName.Length > maxLenght) // больше максимальной длины
-            {
-                Console.WriteLine("\n\nВведённая строка слишком длинная. Заполните поле снова.\n" +
-                                  "Нажмите любую кнопку, чтобы продолжить...");
-                Console.ReadKey();
-                return false;
-            }
-            else // все проверки пройдены успешно
-                return true;
+            int line = 0;            
+            int column = 0;
 
-        }
-        #endregion
 
-        #region isIllegalSymb
-        /// <summary>
-        /// проверка на запрещённые символы
-        /// </summary>
-        /// <param name="test"></param>
-        /// <returns></returns>
-        private static bool IsIllegalSymb(string test) // передача строки в метод
-        {
-            string illegalChars = "!@\"#$%^&*_+=;<>!?\\/|[]{}"; // "запрещённые" символы
-
-            foreach (char c in test) // берём символ из строки
+            while (!exit)
             {
-                foreach (char illegal in illegalChars) // берём символ из "запрещённых" символов
+                Console.Clear();
+
+                Console.WriteLine("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
+                                  "║                                                               Таблица Рейсов                                                              ║\n" +
+                                  "║                                                                                                                                           ║\n" +
+                                  "╠═══════╦═══════════════════════════════════╦═══════════════════════════════════╦══════════════╦══════════════╦═════════════════════════════╣\n" +
+                                  "║--код--║--        Аэропорт вылета        --║--        Аэропорт прилёта       --║-Дата и время-║-Дата и время-║--      Марка самолёта     --║\n" +
+                                  "║-рейса-║                                   ║                                   ║    вылета    ║    вылета    ║                             ║");
+
+
+                int i = start_point;
+                while (((i + 1) % end_point > 0) && (i < Reises_List.Count) )
                 {
-                    if (c == illegal) // сравниваем
-                        return false; // возвращает false, если в строке есть "запрещённый" символ
-                }
-         
-            }
-            return true; // возвращает true, если "запрещённых" символов нет
-        }
-        #endregion
-
-
-
-
-        #region Вывод таблицы
-        public void PrintReises()
-        {
-
-            Console.WriteLine("╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
-                              "║                                                               Таблица Рейсов                                                               ║\n" +
-                              "║                                                                                                                                            ║\n" +
-                              "╠═══════╦═══════════════════════════════════╦═══════════════════════════════════╦══════════════╦══════════════╦══════════════════════════════╣\n" +
-                              "║--код--║--        Аэропорт вылета        --║--        Аэропорт прилёта       --║-Дата и время-║-Дата и время-║--      Марка самолёта     ---║\n" +
-                              "║-рейса-║                                   ║                                   ║    вылета    ║    вылета    ║                              ║");
-
-            
-
-            for (int i = 0; i<Reises_List.Count; i++)
-            {
-                if (i < 20)
-                {
-                    
                     ReisTablBody(Reises_List[i].P_ReisCode,
                                  Reises_List[i].Airport_FlyOut,
                                  Reises_List[i].Airport_FlyIn,
                                  Reises_List[i].Data_FlyOut,
                                  Reises_List[i].Data_FlyIn,
-                                 Reises_List[i].PlaneMark, 
-                                 0, 0);
-                }                               
-                
-            }
-            Console.WriteLine("╚═══════╩═══════════════════════════════════╩═══════════════════════════════════╩══════════════╩══════════════╩══════════════════════════════╣\n");
+                                 Reises_List[i].PlaneMark,
+                                 ref i, line, column);
+                    i++;
+                }
 
-            var button = Console.ReadKey(true).Key;
+                if ((i + 1) % end_point == 0 && (i < Reises_List.Count))
+                {
+                    ReisTablBody(Reises_List[i].P_ReisCode,
+                                 Reises_List[i].Airport_FlyOut,
+                                 Reises_List[i].Airport_FlyIn,
+                                 Reises_List[i].Data_FlyOut,
+                                 Reises_List[i].Data_FlyIn,
+                                 Reises_List[i].PlaneMark,
+                                 ref i, line, column);                    
+                }
 
-            if (button == ConsoleKey.Escape)
-                return;
-            else if (button == ConsoleKey.Enter)
-            {
-                
+                Console.WriteLine("╚═══════╩═══════════════════════════════════╩═══════════════════════════════════╩══════════════╩══════════════╩═════════════════════════════╝\n");
+
+
+
+                var button = Console.ReadKey(true).Key;
+
+                while (button != ConsoleKey.Escape &&
+                       button != ConsoleKey.Enter &&
+                       button != ConsoleKey.LeftArrow &&
+                       button != ConsoleKey.RightArrow &&
+                       button != ConsoleKey.DownArrow &&
+                       button != ConsoleKey.UpArrow)
+                {
+                    button = Console.ReadKey(true).Key;
+                }
+
+                if (button == ConsoleKey.Escape)
+                    return;
+                else if (button == ConsoleKey.Enter)
+                {
+                    if (column == 0)
+                        prices.PrintPrice(Reises_List[line].P_ReisCode);
+                    else
+                        airports.PrintAirports(Reises_List[line].Airport_FlyOut, Reises_List[line].Airport_FlyIn);
+}
+                else if(button == ConsoleKey.RightArrow)
+                {
+                    if (column < 2)
+                    {
+                        ++column;
+                    } 
+                    else
+                    {
+                        column = 0;
+                    }
+                }
+                else if (button == ConsoleKey.LeftArrow)
+                {
+                    if ( column > 0)
+                    {
+                        --column;
+                    }
+                    else
+                    {
+                        column = 2;
+                    }
+                }
+                else if (button == ConsoleKey.DownArrow)
+                {
+                    line++;
+
+                    if ((line % end_point == 0) && (line < Reises_List.Count))
+                    {
+                        start_point += end_point;
+                    }
+                    if (line == Reises_List.Count)
+                    {
+                        line = 0;
+                        start_point = 0;
+                    }
+                }
+                else if (button == ConsoleKey.UpArrow)
+                {
+                    --line;
+
+                    if (line < 0)
+                    {
+                        line = Reises_List.Count - 1;
+                        start_point = (Reises_List.Count - 1) - ((Reises_List.Count - 1) % end_point);
+                    }
+                    else if ((line + 1) % end_point == 0)
+                    {
+                        start_point -= end_point;
+                    }
+                }
+
+
             }
 
         }
@@ -535,32 +589,103 @@ namespace Logic
         #endregion
 
 
-
-
-        public void ReisTablBody(Prices rReisCode, Airports flyOut_Airport, Airports flyIn_Airport, DateTime flyOut_Date, DateTime flyIn_Date, string planeMark, int i, int j)
+        // отрисовка тела таблицы
+        #region ReisTablBody
+        public void ReisTablBody(Prices rReisCode, Airports flyOut_Airport, Airports flyIn_Airport, DateTime flyOut_Date, DateTime flyIn_Date, string planeMark, ref int index, int line, int column)
         {
 
-            string AFO_part1 = "";  // 1/2 аэропорта вылета
+            string AFO_part1 = ""; // 1/2 аэропорта вылета
             string AFO_part2 = ""; // 2/2 аэропорта вылета
 
-            string AFI_part1 = "";  // 1/2 аэропорта прилёта
+            string AFI_part1 = ""; // 1/2 аэропорта прилёта
             string AFI_part2 = ""; // 2/2 аэропорта прилёта
 
+            string PlaneMark_1 = ""; // 1/2 марка самолёта
+            string PlaneMark_2 = ""; // 2/2 марка самолёта
+
+
+
+            Console.WriteLine("╠═══════╬═══════════════════════════════════╬═══════════════════════════════════╬══════════════╬══════════════╬═════════════════════════════╣");
+            Print_Word(flyOut_Airport.Airport_Name, ref AFO_part1, ref AFO_part2, 30); // как выводить название аэропорта вылета ( с переносом ил нет)
+            Print_Word(flyIn_Airport.Airport_Name, ref AFI_part1, ref AFI_part2, 30); // как выводить название аэропорта прилёта ( с переносом ил нет)
+            Print_Word(planeMark, ref PlaneMark_1, ref PlaneMark_2, 25); // как выводить марку самолёта ( с переносом ил нет)
+
+            if (line != index)
+            {
+                Console.WriteLine($"║  {rReisCode.ReisCode}{new string(' ', 5 - rReisCode.ReisCode.ToString().Length)}║  {AFO_part1}{new string(' ', 30 - AFO_part1.Length)}   ║  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ║  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ║  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ║  {PlaneMark_1}{new string(' ', 25 - PlaneMark_1.Length)}  ║");
+                Console.WriteLine($"║       ║  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ║  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ║    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ║");
+            }
+            else
+            {
+                switch (column)
+                {
+                    case 0: // закрасить КОД АЭРОПОРТА
+                        Console.Write($"║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  { rReisCode.ReisCode}{new string(' ', 5 - rReisCode.ReisCode.ToString().Length)}");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {AFO_part1}{new string(' ', 30 - AFO_part1.Length)}   ║  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ║  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ║  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ║  {PlaneMark_1}{new string(' ', 25 - PlaneMark_1.Length)}  ║");
+
+                        Console.Write("║");
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write("       ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ║  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ║    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ║");
+
+                        break;
+
+                    case 1: // закрасить АЭРОПОРТ ПРИЛЁТА
+                        Console.Write($"║  {rReisCode.ReisCode}{new string(' ', 5 - rReisCode.ReisCode.ToString().Length)}║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {AFO_part1}{new string(' ', 30 - AFO_part1.Length)}   ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ║  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ║  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ║  {PlaneMark_1}{new string(' ', 25 - PlaneMark_1.Length)}  ║");
+                        Console.Write("║       ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ║    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ║");
+
+                        break;
+
+                    case 2: // закрасить АЭРОПОРТ ВЫЛЕТА
+                        Console.Write($"║  {rReisCode.ReisCode}{new string(' ', 5 - rReisCode.ReisCode.ToString().Length)}║  {AFO_part1}{new string(' ', 30 - AFO_part1.Length)}   ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ║  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ║  {PlaneMark_1}{new string(' ', 25 - PlaneMark_1.Length)}  ║");
+                        Console.Write($"║       ║  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ║");
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
             
-            Console.WriteLine("╠═══════╬═══════════════════════════════════╬═══════════════════════════════════╬══════════════╬══════════════╬══════════════════════════════╣");
-            Print_AirportName(flyOut_Airport.Airport_Name, ref AFO_part1, ref AFO_part2);
-            Print_AirportName(flyIn_Airport.Airport_Name, ref AFI_part1, ref AFI_part2);
-
-            
-
-            Console.WriteLine($"║  {rReisCode.ReisCode}  ║  {AFO_part1}{new string(' ', 30-AFO_part1.Length)}   ║  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ║  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ║  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ║  {planeMark}{new string(' ', 26 - planeMark.Length)}  ║");
-            Console.WriteLine($"║       ║  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ║  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ║    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║                              ║");
-
         }
+        #endregion
 
-        private void Print_AirportName(string name, ref string part1, ref string part2)
+        // метод, отвечающий за перенос на новую строку
+        #region Print_Word
+        private void Print_Word(string name, ref string part1, ref string part2, int lenght) 
         {
-            if (name.Length < 30)
+            if (name.Length < lenght)
             {
                 part1 = name;
                 part2 = "";
@@ -573,7 +698,7 @@ namespace Logic
                 {
                     if (c == ' ' || c == '-')
                         spacebar++;
-                    if (spacebar < 3 || part1.Length < 30)
+                    if (spacebar < 3 || part1.Length < lenght)
                         part1 += c;
                     else
                         part2 += c;                    
@@ -581,8 +706,881 @@ namespace Logic
                 part2 = part2.Trim();
             }
         }
+        #endregion
+        // =============================================================================
+
+
+
+
+
+
+
+
+
+        // =============================================================================
+
+        // Удаление элемента таблицы
+        #region DeleteInfo
+        public void DeleteInfo(Airports airports, Prices prices)
+        {
+            bool exit = false;
+            int start_point = 0;
+            int line = 0;
+
+            int column = 0;
+
+
+            while (!exit)
+            {
+                Console.Clear();
+
+                Console.WriteLine("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
+                                  "║                                                               Таблица Рейсов                                                              ║\n" +
+                                  "║                                                                                                                                           ║\n" +
+                                  "╠═══════╦═══════════════════════════════════╦═══════════════════════════════════╦══════════════╦══════════════╦═════════════════════════════╣\n" +
+                                  "║--код--║--        Аэропорт вылета        --║--        Аэропорт прилёта       --║-Дата и время-║-Дата и время-║--      Марка самолёта     --║\n" +
+                                  "║-рейса-║                                   ║                                   ║    вылета    ║    вылета    ║                             ║");
+
+
+                int i = start_point;
+                while (((i + 1) % 20) > 0 && i < Reises_List.Count)
+                {
+                    ReisTablBody(Reises_List[i].P_ReisCode,
+                                 Reises_List[i].Airport_FlyOut,
+                                 Reises_List[i].Airport_FlyIn,
+                                 Reises_List[i].Data_FlyOut,
+                                 Reises_List[i].Data_FlyIn,
+                                 Reises_List[i].PlaneMark,
+                                 ref i, line, column);
+                    i++;
+                }
+
+                Console.WriteLine("╚═══════╩═══════════════════════════════════╩═══════════════════════════════════╩══════════════╩══════════════╩═════════════════════════════╝\n");
+
+                var button = Console.ReadKey(true).Key;
+
+                while (button != ConsoleKey.Escape &&
+                       button != ConsoleKey.Enter &&
+                       button != ConsoleKey.LeftArrow &&
+                       button != ConsoleKey.RightArrow &&
+                       button != ConsoleKey.DownArrow &&
+                       button != ConsoleKey.UpArrow)
+                {
+                    button = Console.ReadKey(true).Key;
+                }
+
+                if (button == ConsoleKey.Escape) // выйти
+                    return;
+                else if (button == ConsoleKey.Enter) // выбрать элемент
+                {
+                    if (column == 0) // удалить код рейса
+                    {
+                        bool sure = false;
+                        if (sure.AreUSure("","Вы уверены, что хотите удалить выбранный элемент?"))
+                        {
+                            Reises_List[line].P_ReisCode.ReisCode = null;
+                            Reises_List[line].P_ReisCode.BuisnessClass_Num = null;
+                            Reises_List[line].P_ReisCode.BuisnessClass_Price = null;
+                            Reises_List[line].P_ReisCode.EconomClass_Num = null;
+                            Reises_List[line].P_ReisCode.EconomClass_Price = null;
+                        }
+                        
+                    }
+                    else if (column == 1) // удалить аэропорт вылета
+                    {
+                        bool sure = false;
+                        if (sure.AreUSure("","Вы уверены, что хотите удалить выбранный элемент?"))
+                        {
+                            Reises_List[line].Airport_FlyOut.Airport_Code = "---";
+                            Reises_List[line].Airport_FlyOut.Airport_City = "---";
+                            Reises_List[line].Airport_FlyOut.Airport_Name = "---";
+                        }
+                    }
+                    else if (column == 2) // удалить аэропорт прилёта
+                    {
+                        bool sure = false;
+                        if (sure.AreUSure("","Вы уверены, что хотите удалить выбранный элемент?"))
+                        {
+                            Reises_List[line].Airport_FlyIn.Airport_Code = "---";
+                            Reises_List[line].Airport_FlyIn.Airport_City = "---";
+                            Reises_List[line].Airport_FlyIn.Airport_Name = "---";
+                        }
+                    }
+
+                }
+                else if (button == ConsoleKey.RightArrow) // вправо
+                {
+                    if (column < 2)
+                    {
+                        ++column;
+                    }
+                    else
+                    {
+                        column = 0;
+                    }
+                }
+                else if (button == ConsoleKey.LeftArrow) // влево
+                {
+                    if (column > 0)
+                    {
+                        --column;
+                    }
+                    else
+                    {
+                        column = 2;
+                    }
+                }
+                else if (button == ConsoleKey.DownArrow) // вниз
+                {
+                    if (line < Reises_List.Count)
+                    {
+                        if (line == Reises_List.Count - 1)
+                        {
+                            line = 0;
+                        }
+                        else if (line == 19)
+                        {
+                            start_point += 20;
+                            ++line;
+                        }
+                        else
+                            ++line;
+                    }
+                }
+                else if (button == ConsoleKey.UpArrow) // вверх
+                {
+                    if (line >= 0)
+                    {
+                        if (line == 0)
+                        {
+                            line = Reises_List.Count - 1;
+                        }
+                        else if (line == 20)
+                        {
+                            start_point -= 20;
+                            --line;
+                        }
+                        else
+                            --line;
+
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        // =============================================================================
+
+
+
+
+
+
+
+
+
         
+       
+        public void RedactInfo(Airports airports, Prices prices)
+        {
+            bool exit = false;
+            int start_point = 0;
+            int line = 0;
+
+            int column = 0;
 
 
+            while (!exit)
+            {
+                Console.Clear();
+
+                Console.WriteLine("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
+                                  "║                                                               Таблица Рейсов                                                              ║\n" +
+                                  "║                                                                                                                                           ║\n" +
+                                  "╠═══════╦═══════════════════════════════════╦═══════════════════════════════════╦══════════════╦══════════════╦═════════════════════════════╣\n" +
+                                  "║--код--║--        Аэропорт вылета        --║--        Аэропорт прилёта       --║-Дата и время-║-Дата и время-║--      Марка самолёта     --║\n" +
+                                  "║-рейса-║                                   ║                                   ║    вылета    ║    вылета    ║                             ║");
+
+
+                int i = start_point;
+                while (((i + 1) % 20) > 0 && i < Reises_List.Count)
+                {
+                    ReisTablBody(Reises_List[i].P_ReisCode,
+                                 Reises_List[i].Airport_FlyOut,
+                                 Reises_List[i].Airport_FlyIn,
+                                 Reises_List[i].Data_FlyOut,
+                                 Reises_List[i].Data_FlyIn,
+                                 Reises_List[i].PlaneMark,
+                                 ref i, line, column);
+                    i++;
+                }
+
+                Console.WriteLine("╚═══════╩═══════════════════════════════════╩═══════════════════════════════════╩══════════════╩══════════════╩═════════════════════════════╝\n");
+
+                var button = Console.ReadKey(true).Key;
+
+                while (button != ConsoleKey.Escape &&
+                       button != ConsoleKey.Enter &&
+                       button != ConsoleKey.LeftArrow &&
+                       button != ConsoleKey.RightArrow &&
+                       button != ConsoleKey.DownArrow &&
+                       button != ConsoleKey.UpArrow)
+                {
+                    button = Console.ReadKey(true).Key;
+                }
+
+                if (button == ConsoleKey.Escape) // выйти
+                    return;
+                else if (button == ConsoleKey.Enter) // выбрать элемент
+                {
+                    switch (column)
+                    {
+                        case 0: // РЕДАКТИРОВАТЬ КОД РЕЙСА
+                            RedactCode(prices.Prices_List, Reises_List[line].P_ReisCode);
+                            break;
+
+                        case 1: // РЕДАКТИРОВАТЬ АЭРОПОРТ ВЫЛЕТА
+
+                            break;
+
+                        case 2: // РЕДАКТИРОВАТЬ АЭРОПОРТ ПРИЛЁТА
+
+                            break;
+
+                        case 3: // РЕДАКТИРОВАТЬ ДАТУ И ВРЕМЯ ВЫЛЕТА
+
+                            break;
+
+                        case 4: // РЕДАКТИРОВАТЬ ДАТУ И ВРЕМЯ ПРИЛЁТА
+
+                            break;
+
+                        case 5: // РЕДАКТИРОВАТЬ МАРКУ САМОЛЁТА
+
+                            break;
+
+                    }                    
+
+                }
+                else if (button == ConsoleKey.RightArrow) // вправо
+                {
+                    if (column < 2)
+                    {
+                        ++column;
+                    }
+                    else
+                    {
+                        column = 0;
+                    }
+                }
+                else if (button == ConsoleKey.LeftArrow) // влево
+                {
+                    if (column > 0)
+                    {
+                        --column;
+                    }
+                    else
+                    {
+                        column = 2;
+                    }
+                }
+                else if (button == ConsoleKey.DownArrow) // вниз
+                {
+                    if (line < Reises_List.Count)
+                    {
+                        if (line == Reises_List.Count - 1)
+                        {
+                            line = 0;
+                        }
+                        else if (line == 19)
+                        {
+                            start_point += 20;
+                            ++line;
+                        }
+                        else
+                            ++line;
+                    }
+                }
+                else if (button == ConsoleKey.UpArrow) // вверх
+                {
+                    if (line >= 0)
+                    {
+                        if (line == 0)
+                        {
+                            line = Reises_List.Count - 1;
+                        }
+                        else if (line == 20)
+                        {
+                            start_point -= 20;
+                            --line;
+                        }
+                        else
+                            --line;
+
+                    }
+                }
+            }
+        }
+
+
+
+
+        private void RedactCode(List<Prices> plist, Prices prices)
+        {
+            int? reisCode = prices.ReisCode;
+            int? BC_Num = prices.BuisnessClass_Num;
+            int? BC_Price = prices.BuisnessClass_Price;
+            int? EC_Num = prices.EconomClass_Num;
+            int? EC_Price = prices.EconomClass_Price;
+
+            ConsoleKey button;
+
+            bool exit = false;
+
+
+            int line = 0;
+
+            while (!exit)
+            {
+                switch (line)
+                {
+                    case 0:
+                        Console.Clear();
+
+                        #region ВЫДЕЛЕНИЕ КОДА РЕЙСА
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ КОДА РЕЙСА
+                        Console.Write("Код рейса:");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {reisCode} ");
+                        Console.ResetColor();
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ КОДА РЕЙСА
+
+                        Console.WriteLine($"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                          $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                          $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                          $"Цена за место Эконом-класса: {EC_Price}\n");
+                        #endregion
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+
+                                #region EXIT
+                                exit = exit.AreUSure($"Код рейса: {reisCode}\n" +
+                                               $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                               $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                               $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                               $"Цена за место Эконом-класса: {EC_Price}\n",
+                                               "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    prices.ReisCode = reisCode;
+                                    prices.BuisnessClass_Num = BC_Num;
+                                    prices.BuisnessClass_Price = BC_Price;
+                                    prices.EconomClass_Num = EC_Num;
+                                    prices.EconomClass_Price = EC_Price;
+                                }
+
+                                return;
+                                #endregion
+
+                                break;
+
+                            case ConsoleKey.Enter:
+                                
+                                while (!exit)
+                                {
+                                    Console.Clear(); // очистка консоли
+
+                                    Console.WriteLine($"Код рейса: \n" +
+                                                      $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                                      $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                                      $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                                      $"Цена за место Эконом-класса: {EC_Price}\n");
+                                    Console.SetCursorPosition(11, 0);
+
+                                    RedactReisCode(plist, ref reisCode, ref exit);                                
+                                }
+                                exit = false;
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line++;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line = 4;
+
+                                break;
+
+                        }
+
+
+                        break;
+
+
+                    case 1:
+                        Console.Clear();
+
+                        #region ВЫДЕЛЕНИЕ МЕСТ БИЗНЕС-КЛАССА
+                        Console.WriteLine($"Код рейса: {reisCode}");
+
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ МЕСТ БИЗНЕС-КЛАССА
+                        Console.Write("Количество мест Бизнес-класса:");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {BC_Num} ");
+                        Console.ResetColor();
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ МЕСТ БИЗНЕС-КЛАССА
+
+                        Console.WriteLine($"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                          $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                          $"Цена за место Эконом-класса: {EC_Price}\n");
+                        #endregion
+
+
+                        switch (PressedButton(out button))
+                        {                            
+                            case ConsoleKey.Escape:
+
+                                #region EXIT
+                                exit = exit.AreUSure($"Код рейса: {reisCode}\n" +
+                                               $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                               $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                               $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                               $"Цена за место Эконом-класса: {EC_Price}\n",
+                                               "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    prices.ReisCode = reisCode;
+                                    prices.BuisnessClass_Num = BC_Num;
+                                    prices.BuisnessClass_Price = BC_Price;
+                                    prices.EconomClass_Num = EC_Num;
+                                    prices.EconomClass_Price = EC_Price;
+                                }
+
+                                return;
+                                #endregion
+
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+
+                                    Console.WriteLine($"Код рейса: {reisCode}\n" +
+                                                      $"Количество мест Бизнес-класса: \n" +
+                                                      $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                                      $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                                      $"Цена за место Эконом-класса: {EC_Price}\n");
+                                    Console.SetCursorPosition(31, 1);
+
+                                    BC_Num = RedactPlacesPrices(500, ref exit);
+                                }
+                                exit = false;
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line++;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line--;
+
+                                break;
+                        }
+
+                        break;
+
+                    case 2:
+                        Console.Clear();
+
+                        #region ВЫДЕЛЕНИЕ ЦЕН БИЗНЕС-КЛАССА
+                        Console.WriteLine($"Код рейса: {reisCode}\n" +
+                                                  $"Количество мест Бизнес-класса: {BC_Num}");
+
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ ЦЕН БИЗНЕС-КЛАССА
+                        Console.Write($"Цена за место Бизнес-класса:");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {BC_Price} ");
+                        Console.ResetColor();
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ ЦЕН БИЗНЕС-КЛАССА
+
+                        Console.WriteLine($"Количество мест Эконом-класса: {EC_Num}\n" +
+                                          $"Цена за место Эконом-класса: {EC_Price}\n");
+                        #endregion
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+                                
+                                #region EXIT
+                                exit = exit.AreUSure($"Код рейса: {reisCode}\n" +
+                                               $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                               $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                               $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                               $"Цена за место Эконом-класса: {EC_Price}\n",
+                                               "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    prices.ReisCode = reisCode;
+                                    prices.BuisnessClass_Num = BC_Num;
+                                    prices.BuisnessClass_Price = BC_Price;
+                                    prices.EconomClass_Num = EC_Num;
+                                    prices.EconomClass_Price = EC_Price;
+                                }
+
+                                return;
+                                #endregion
+
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+
+                                    Console.WriteLine($"Код рейса: {reisCode}\n" +
+                                                      $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                                      $"Цена за место Бизнес-класса: \n" +
+                                                      $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                                      $"Цена за место Эконом-класса: {EC_Price}\n");
+                                    Console.SetCursorPosition(29, 2);
+
+                                    BC_Price = RedactPlacesPrices(2000000, ref exit);
+                                }
+                                exit = false;
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line++;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line--;
+
+                                break;
+                        }
+
+
+                        break;
+
+                    case 3:
+                        Console.Clear();
+
+                        #region ВЫДЕЛЕНИЕ МЕСТ ЭКОНОМ-КЛАССА
+                        Console.WriteLine($"Код рейса: {reisCode}\n" +
+                                                  $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                                  $"Цена за место Бизнес-класса: {BC_Price}");
+
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ МЕСТ ЭКОНОМ-КЛАССА
+                        Console.Write($"Количество мест Эконом-класса:");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {EC_Num} ");
+                        Console.ResetColor();
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ МЕСТ ЭКОНОМ-КЛАССА
+
+                        Console.WriteLine($"Цена за место Эконом-класса: {EC_Price}\n");
+                        #endregion
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+                                #region EXIT
+                                exit = exit.AreUSure($"Код рейса: {reisCode}\n" +
+                                               $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                               $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                               $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                               $"Цена за место Эконом-класса: {EC_Price}\n",
+                                               "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    prices.ReisCode = reisCode;
+                                    prices.BuisnessClass_Num = BC_Num;
+                                    prices.BuisnessClass_Price = BC_Price;
+                                    prices.EconomClass_Num = EC_Num;
+                                    prices.EconomClass_Price = EC_Price;
+                                }
+
+                                return;
+                                #endregion
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+
+                                    Console.WriteLine($"Код рейса: {reisCode}\n" +
+                                                      $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                                      $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                                      $"Количество мест Эконом-класса: \n" +
+                                                      $"Цена за место Эконом-класса: {EC_Price}\n");
+                                    Console.SetCursorPosition(31, 3);
+
+                                    EC_Num = RedactPlacesPrices(500, ref exit);
+                                }
+                                exit = false;
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line++;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line--;
+
+                                break;
+                        }
+
+
+
+                        break;
+
+                    case 4:
+                        Console.Clear();
+
+                        #region ВЫДЕЛЕНИЕ ЦЕН ЭКОНОМ-КЛАССА
+                        Console.WriteLine($"Код рейса: {reisCode}\n" +
+                                                  $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                                  $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                                  $"Количество мест Эконом-класса: {EC_Num}");
+
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ ЦЕН ЭКОНОМ-КЛАССА
+                        Console.Write($"Цена за место Эконом-класса: ");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {EC_Price} ");
+                        Console.ResetColor();
+                        //------------------------------------------------------------ ВЫДЕЛЕНИЕ ЦЕН ЭКОНОМ-КЛАССА
+                        #endregion
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+                                exit = exit.AreUSure($"Код рейса: {reisCode}\n" +
+                                               $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                               $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                               $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                               $"Цена за место Эконом-класса: {EC_Price}\n",
+                                               "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    prices.ReisCode = reisCode;
+                                    prices.BuisnessClass_Num = BC_Num;
+                                    prices.BuisnessClass_Price = BC_Price;
+                                    prices.EconomClass_Num = EC_Num;
+                                    prices.EconomClass_Price = EC_Price;
+                                }
+
+                                return; break;
+
+                            case ConsoleKey.Enter:
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+
+                                    Console.WriteLine($"Код рейса: {reisCode}\n" +
+                                                      $"Количество мест Бизнес-класса: {BC_Num}\n" +
+                                                      $"Цена за место Бизнес-класса: {BC_Price}\n" +
+                                                      $"Количество мест Эконом-класса: {EC_Num}\n" +
+                                                      $"Цена за место Эконом-класса: \n");
+                                    Console.SetCursorPosition(29, 4);
+
+                                    EC_Price = RedactPlacesPrices(2000000, ref exit);
+                                }
+                                exit = false;
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line = 0;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line--;
+
+                                break;
+                        }
+
+
+
+                        break;
+
+
+                }
+            }
+        }
+
+
+        private void RedactAirportFlyOut()
+        {
+
+        }
+
+        private void RedactAirportFlyIn()
+        {
+
+        }
+
+        private void RedactFlyOutDate()
+        {
+
+        }
+
+        private void RedactFlyInDate()
+        {
+
+        }
+
+        private void RedactPlaneMark()
+        {
+
+        }
+
+        /// <summary>
+        /// РЕДАКТИРОВАНИЕ КОДА АЭРОПОРТА
+        /// </summary>
+        /// <param name="reisCode">итоговый код</param>
+        /// <param name="exit">условие выхода</param>
+        private void RedactReisCode(List<Prices> plist, ref int? reisCode, ref bool exit)
+        {
+            int promeghutochnoe;
+            string input;
+
+            int equal = 0;
+            bool isEqual = false;
+
+
+            input = Console.ReadLine();
+            input = input.Trim();
+
+            if (string.IsNullOrWhiteSpace(input)) // проверка на корректность введённых данных
+            {
+                Console.WriteLine("\n\n\n\n\nПоле кода рейса не заполнено. Введите 3 цифры! \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+            }
+            else if (input.Length > 3)
+            {
+                Console.WriteLine("\n\n\n\n\nКод рейса слишком длинный. Введите 3 цифры! \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+            }
+            else if (input.Length < 3)
+            {
+                Console.WriteLine("\n\n\n\n\nКод рейса слишком короткий. Введите 3 цифры! \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+            }
+            else if (!int.TryParse(input, out promeghutochnoe))
+            {
+                Console.WriteLine("\n\n\n\n\nВ коде присутствуют запрещённые символы. Введите 3 цифры! \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+            }
+            else // код рейса введён верно
+            {
+                reisCode = promeghutochnoe;
+                
+                for (int i = 0; i < plist.Count-1; i++)
+                {
+                    if (reisCode == plist[i].ReisCode)
+                        equal++;
+
+                    if (equal > 0)
+                    {
+                        Console.WriteLine("\n\n\n\n\nТакой код рейса уже существует! Введите новый код рейса.\n" +
+                                          "Нажмите любую кнопку, чтобы продолжить...");
+                        isEqual = true;
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                if (!isEqual)
+                    exit = true; // то ливаем и идём дальше
+
+                return;
+            }        
+            exit = false;
+        }
+
+
+        private int RedactPlacesPrices(int maxNum, ref bool exit)
+        {
+            int answer; // это вернётся, если всё ок
+            string inpit = Console.ReadLine(); // строка, чтобы её преобразовать в int
+            inpit = inpit.Trim();
+            exit = false;
+
+            if (string.IsNullOrWhiteSpace(inpit)) // пусто
+            {
+                Console.WriteLine("\n\nПоле не заполнено! Заполните поле. \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+                return -1;
+            }
+            else if (!int.TryParse(inpit, out answer)) // не число
+            {
+                Console.WriteLine("\n\nПожалуйста, введите число. Заполните поле заново. \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+                return -1;
+            }
+            else if (answer < 0) // слишком маленькое
+            {
+                Console.WriteLine("\n\nЧисло не может быть отрицательным. Заполните поле заново. \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+                return -1;
+            }
+            else if (answer > maxNum) // слишком большое
+            {
+                Console.WriteLine("\n\nВведённое число слишком большое. Заполните поле заново. \n" +
+                                  "Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey();
+                return -1;
+            }
+            else
+            {
+                exit = true;
+                return answer;
+            }
+        }
+
+
+        /// <summary>
+        /// КНОПКА нажата ESCAPE, ENTER, DOWN, UP
+        /// </summary>
+        /// <param name="button">нажатая кнопка кнопка</param>
+        /// <returns></returns>
+        private ConsoleKey PressedButton(out ConsoleKey button)
+        {
+            button = Console.ReadKey(true).Key;
+            while (button != ConsoleKey.Enter && button != ConsoleKey.Escape && button != ConsoleKey.DownArrow && button != ConsoleKey.UpArrow)
+            {
+                button = Console.ReadKey(true).Key;
+            }
+
+            return button;
+        }
     }
 }
