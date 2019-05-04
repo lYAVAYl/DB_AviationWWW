@@ -13,10 +13,10 @@ namespace Logic
         public Airports Airport_FlyOut { get; set; }
         public Airports Airport_FlyIn { get; set; }
 
-        public DateTime Data_FlyOut { get; set; }
-        public DateTime Data_FlyIn { get; set; }
+        public DateTime Data_FlyOut;
+        public DateTime Data_FlyIn;
 
-        public string PlaneMark { get; set; }
+        public string PlaneMark = "";
 
         public Prices P_ReisCode { get; set; }
 
@@ -405,7 +405,7 @@ namespace Logic
         #region isCorrect Difference between FlyOut & FlyIn dates
         private static bool isCorrect_Difference(DateTime FlyOut_date, DateTime FlyIn_date)
         {
-            if (FlyIn_date.Date < FlyOut_date.Date) // дата прилёта раньше даты вылета
+            if (FlyIn_date < FlyOut_date) // дата прилёта раньше даты вылета
             {
                 Console.WriteLine("\nДата прилёта не может быть раньше даты вылета. Заполните поле снова.\n" +
                                   "Нажмите любую клавишу, чтобы продолжить...");
@@ -414,16 +414,15 @@ namespace Logic
             }
             else // дата прилёта позже даты вылета
             {
-                var DifferenceInTime = FlyIn_date - FlyOut_date; // разница между вылетом и прилётом
-                DateTime DIfferenceDate = new DateTime(DifferenceInTime.Ticks); // преобразование разницы в экземпляр DateTime
+                var DifferenceInTime = (FlyIn_date - FlyOut_date).TotalHours; // разница между вылетом и прилётом
 
-                int hour = DIfferenceDate.Hour; // разница в часах
+                int hour = (int)DifferenceInTime; // разница в часах
 
                 if (hour > 0 && hour <= 18) // время полёта 1-18 часов (верно)
                     return true;
                 else if (hour < 1) // время полёта <1 часа
                 {
-                    Console.WriteLine("\nВремя полёта слишком короткое \n" +
+                    Console.WriteLine("\nВремя полёта не может быть менее 1 часа и более 18 часов. \n" +
                                       "Нажмите любую клавишу, чтобы продолжить...");
                     Console.ReadKey(true);
 
@@ -438,6 +437,7 @@ namespace Logic
                 }
                 else
                 {
+                    
                     Console.WriteLine("\nВремя полёта слишком большое \n" +
                                       "Нажмите любую клавишу, чтобы продолжить...");
                     Console.ReadKey(true);
@@ -673,6 +673,64 @@ namespace Logic
 
                         break;
 
+                    case 3:
+                        Console.Write($"║  {rReisCode.ReisCode}{new string(' ', 5 - rReisCode.ReisCode.ToString().Length)}║  {AFO_part1}{new string(' ', 30 - AFO_part1.Length)}   ║  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ║  {PlaneMark_1}{new string(' ', 25 - PlaneMark_1.Length)}  ║");
+
+                        Console.Write($"║       ║  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ║  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ║");
+
+
+                        break;
+
+                    case 4:
+                        Console.Write($"║  {rReisCode.ReisCode}{new string(' ', 5 - rReisCode.ReisCode.ToString().Length)}║  {AFO_part1}{new string(' ', 30 - AFO_part1.Length)}   ║  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ║  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {PlaneMark_1}{new string(' ', 25 - PlaneMark_1.Length)}  ║");
+
+                        Console.Write($"║       ║  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ║  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ║    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ║");
+
+                        break;
+
+                    case 5:
+                        Console.Write($"║  {rReisCode.ReisCode}{new string(' ', 5 - rReisCode.ReisCode.ToString().Length)}║  {AFO_part1}{new string(' ', 30 - AFO_part1.Length)}   ║  {AFI_part1}{new string(' ', 30 - AFI_part1.Length)}   ║  {flyOut_Date.Day:00}.{flyOut_Date.Month:00}.{flyOut_Date.Year}  ║  {flyIn_Date.Day:00}.{flyIn_Date.Month:00}.{flyIn_Date.Year}  ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {PlaneMark_1}{new string(' ', 25 - PlaneMark_1.Length)}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║");
+
+                        Console.Write($"║       ║  {AFO_part2}{new string(' ', 30 - AFO_part2.Length)}   ║  {AFI_part2}{new string(' ', 30 - AFI_part2.Length)}   ║    {flyOut_Date.Hour:00}:{flyOut_Date.Minute:00}     ║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║");
+
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write($"  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"║");
+
+                        break;
+
                     default:
                         break;
                 }
@@ -881,7 +939,11 @@ namespace Logic
 
 
         
-       
+       /// <summary>
+       /// РЕДАКТИРОВАНИЕ
+       /// </summary>
+       /// <param name="airports"></param>
+       /// <param name="prices"></param>
         public void RedactInfo(Airports airports, Prices prices)
         {
             bool exit = false;
@@ -937,27 +999,92 @@ namespace Logic
                     switch (column)
                     {
                         case 0: // РЕДАКТИРОВАТЬ КОД РЕЙСА
-                            RedactCode(prices.Prices_List, Reises_List[line].P_ReisCode);
+                            RedactCode(prices, Reises_List[line].P_ReisCode);
                             break;
 
                         case 1: // РЕДАКТИРОВАТЬ АЭРОПОРТ ВЫЛЕТА
+                            bool exxxit = false;
+
+                            while (!exxxit)
+                            {
+                                Console.Clear();
+                                int indexofAirport;
+
+                                if (Redact_Everywhere_OR_Once())
+                                {
+                                    int j = 0;
+                                    for (j = 0; j < airports.Airport_List.Count; j++)
+                                    {
+                                        if (airports.Airport_List[j] == Reises_List[line].Airport_FlyIn)
+                                            break;
+                                    }
+
+                                    indexofAirport = airports.ChooseCreatedAirport(j);
+                                    if (indexofAirport == -1)
+                                        exxxit = true;
+                                    else
+                                    {
+                                        Reises_List[line].Airport_FlyOut = airports.Airport_List[indexofAirport];
+                                        exxxit = true;
+                                    }
+
+                                }                                
+                                else
+                                {
+                                    RedactAirport(Reises_List[line].Airport_FlyOut, Reises_List[line].Airport_FlyIn, airports);
+                                    exxxit = true;
+                                }
+                            }
+                            exxxit = false;
 
                             break;
 
                         case 2: // РЕДАКТИРОВАТЬ АЭРОПОРТ ПРИЛЁТА
 
+                            exxxit = false;
+
+                            while (!exxxit)
+                            {
+                                Console.Clear();
+                                int indexofAirport;
+                                if (Redact_Everywhere_OR_Once())
+                                {
+                                    int j = 0;
+                                    for (j = 0; j < airports.Airport_List.Count; j++)
+                                    {
+                                        if (airports.Airport_List[j] == Reises_List[line].Airport_FlyOut)
+                                            break;
+                                    }
+
+                                    indexofAirport = airports.ChooseCreatedAirport(j);
+                                    if (indexofAirport == -1)
+                                        exxxit = true;
+                                    else
+                                    {
+                                        Reises_List[line].Airport_FlyIn = airports.Airport_List[indexofAirport];
+                                        exxxit = true;
+                                    }
+
+                                }
+                                else
+                                {
+                                    RedactAirport(Reises_List[line].Airport_FlyIn, Reises_List[line].Airport_FlyOut, airports);
+                                    exxxit = true;
+                                }
+                            }
+                            exxxit = false;
                             break;
 
                         case 3: // РЕДАКТИРОВАТЬ ДАТУ И ВРЕМЯ ВЫЛЕТА
-
+                            RedactDate(ref Reises_List[line].Data_FlyOut, ref Reises_List[line].Data_FlyIn);
                             break;
 
                         case 4: // РЕДАКТИРОВАТЬ ДАТУ И ВРЕМЯ ПРИЛЁТА
-
+                            RedactDate(ref Reises_List[line].Data_FlyOut, ref Reises_List[line].Data_FlyIn);
                             break;
 
                         case 5: // РЕДАКТИРОВАТЬ МАРКУ САМОЛЁТА
-
+                            RedactPlaneMark(ref Reises_List[line].PlaneMark);
                             break;
 
                     }                    
@@ -965,7 +1092,7 @@ namespace Logic
                 }
                 else if (button == ConsoleKey.RightArrow) // вправо
                 {
-                    if (column < 2)
+                    if (column < 5)
                     {
                         ++column;
                     }
@@ -982,7 +1109,7 @@ namespace Logic
                     }
                     else
                     {
-                        column = 2;
+                        column = 5;
                     }
                 }
                 else if (button == ConsoleKey.DownArrow) // вниз
@@ -1025,8 +1152,12 @@ namespace Logic
 
 
 
-
-        private void RedactCode(List<Prices> plist, Prices prices)
+        /// <summary>
+        /// ИЗМЕНЕНИЕ КОДА РЕЦСА
+        /// </summary>
+        /// <param name="plist">список кодов рейсов</param>
+        /// <param name="prices">изменяемый код рейса</param>
+        private void RedactCode(Prices plist, Prices prices)
         {
             int? reisCode = prices.ReisCode;
             int? BC_Num = prices.BuisnessClass_Num;
@@ -1101,7 +1232,7 @@ namespace Logic
                                                       $"Цена за место Эконом-класса: {EC_Price}\n");
                                     Console.SetCursorPosition(11, 0);
 
-                                    RedactReisCode(plist, ref reisCode, ref exit);                                
+                                    RedactReisCode(plist.Prices_List, ref reisCode, ref exit);                                
                                 }
                                 exit = false;
 
@@ -1430,30 +1561,251 @@ namespace Logic
         }
 
 
-        private void RedactAirportFlyOut()
+        /// <summary>
+        /// ИЗМЕНЕНИЕ ИНФОРМАЦИИ ОБ АЭРОПОРТЕ
+        /// </summary>
+        /// <param name="airport1">аэропорт1</param>
+        /// <param name="airport2">аэропорт2</param>
+        private void RedactAirport(Airports airport1, Airports airport2, Airports all_airports)
         {
+            int line = 0;
+            bool exit = false;
+            ConsoleKey button;
 
+            string Iata = airport1.Airport_Code;
+            string City = airport1.Airport_City;
+            string Name = airport1.Airport_Name;
+
+            while (!exit)
+            {
+                switch (line)
+                {
+                    case 0:
+                        Console.Clear();
+
+                        #region ВЫДЕЛЕНИЕ IATA-КОДА АЭРОПОРТА
+
+                        Console.Write("IATA код аэропорта:");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {Iata} ");
+                        Console.ResetColor();
+                                                                                             
+                        Console.WriteLine($"Город аэропорта: {City}\n" +
+                                          $"Название аэропорта: {Name}\n");
+
+                        #endregion
+
+                        switch (PressedButton(out button))
+                        {
+                            
+                            case ConsoleKey.Escape:
+                                #region EXIT
+                                exit = exit.AreUSure($"IATA код аэропорта: {Iata}\n" +
+                                                     $"Город аэропорта: {City}\n" +
+                                                     $"Название аэропорта: {Name}\n",
+                                                     "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    airport1.Airport_Code = Iata;
+                                    airport1.Airport_City = City;
+                                    airport1.Airport_Name = Name;
+                                }
+                                return;
+                                #endregion
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                #region РЕДАКТИРОВАНИЕ IATA-КОДА АЭРОПОРТА
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+
+                                    Console.WriteLine($"IATA код аэропорта: \n" +
+                                                      $"Город аэропорта: {City}\n" +
+                                                      $"Название аэропорта: {Name}\n");
+                                    Console.SetCursorPosition(20, 0);
+
+                                    Iata = Console.ReadLine();
+
+                                    if (Iata.isCorrectIATA())
+                                    {
+                                        Iata = Iata.ToUpper();
+                                        exit = isRedactedCodeCreated(Iata, airport1.Airport_Code, all_airports.Airport_List);
+                                    }
+
+                                }
+                                exit = false;
+
+                                #endregion
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+
+                                line++;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line = 2;
+
+                                break;
+
+                        }
+
+                        break;
+
+                    case 1:
+                        #region ВЫДЕЛЕНИЕ ГОРОДА АЭРОПОРТА
+                        Console.Clear();
+
+                        Console.WriteLine($"IATA код аэропорта: {Iata}");
+
+                        Console.Write("Город аэропорта:");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {City} ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"Название аэропорта: {Name}\n");
+                        #endregion
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+                                #region EXIT
+                                exit = exit.AreUSure($"IATA код аэропорта: {Iata}\n" +
+                                                     $"Город аэропорта: {City}\n" +
+                                                     $"Название аэропорта: {Name}\n",
+                                                     "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    airport1.Airport_Code = Iata;
+                                    airport1.Airport_City = City;
+                                    airport1.Airport_Name = Name;
+                                }
+                                return;
+                                #endregion
+
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                #region РЕДАКТИРОВАНИЕ ГОРОДА АЭРОПОРТА
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+
+                                    Console.WriteLine($"IATA код аэропорта: {Iata}\n" +
+                                                      $"Город аэропорта: \n" +
+                                                      $"Название аэропорта: {Name}\n");
+                                    Console.SetCursorPosition(17, 1);
+
+                                    City = Console.ReadLine();
+                                    City = City.Trim();
+                                    exit = City.isCorrectString(3, 50);
+                                }
+                                exit = false;
+
+                                #endregion
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line++;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line--;
+
+                                break;
+
+                        }
+
+
+                        break;
+
+
+                    case 2:
+
+                        #region ВЫДЕЛЕНИЕ НАЗВАНИЯ АЭРОПОРТА
+                        Console.Clear();
+
+                        Console.WriteLine($"IATA код аэропорта: {Iata}\n" +
+                                          $"Город аэропорта: {City}");
+
+                        Console.Write("Название аэропорта:");
+
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {Name} ");
+                        Console.ResetColor();
+                        #endregion
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+                                #region EXIT
+                                exit = exit.AreUSure($"IATA код аэропорта: {Iata}\n" +
+                                                     $"Город аэропорта: {City}\n" +
+                                                     $"Название аэропорта: {Name}\n",
+                                                     "Сохранить изменения?");
+                                if (exit)
+                                {
+                                    airport1.Airport_Code = Iata;
+                                    airport1.Airport_City = City;
+                                    airport1.Airport_Name = Name;
+                                }
+                                return;
+                                #endregion
+                                
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                #region РЕДАКТИРОВАТЬ НАЗВАНИЕ АЭРОПОРТА
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+
+                                    Console.WriteLine($"IATA код аэропорта: {Iata}\n" +
+                                                      $"Город аэропорта: {City}\n" +
+                                                      $"Название аэропорта: \n");
+                                    Console.SetCursorPosition(20, 2);
+
+                                    Name = Console.ReadLine();
+                                    Name = Name.Trim();
+                                    exit = Name.isCorrectString(3, 50);
+
+                                }
+                                exit = false;
+
+                                #endregion
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line = 0;
+
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line--;
+
+                                break;
+
+                        }
+
+                        break;
+                }
+            }
         }
-
-        private void RedactAirportFlyIn()
-        {
-
-        }
-
-        private void RedactFlyOutDate()
-        {
-
-        }
-
-        private void RedactFlyInDate()
-        {
-
-        }
-
-        private void RedactPlaneMark()
-        {
-
-        }
+        
 
         /// <summary>
         /// РЕДАКТИРОВАНИЕ КОДА АЭРОПОРТА
@@ -1498,11 +1850,10 @@ namespace Logic
             }
             else // код рейса введён верно
             {
-                reisCode = promeghutochnoe;
                 
-                for (int i = 0; i < plist.Count-1; i++)
+                for (int i = 0; i < plist.Count; i++)
                 {
-                    if (reisCode == plist[i].ReisCode)
+                    if (promeghutochnoe == plist[i].ReisCode && reisCode!= promeghutochnoe)
                         equal++;
 
                     if (equal > 0)
@@ -1516,14 +1867,22 @@ namespace Logic
                 }
 
                 if (!isEqual)
+                {
+                    reisCode = promeghutochnoe;
                     exit = true; // то ливаем и идём дальше
+                }
 
                 return;
             }        
             exit = false;
         }
 
-
+        /// <summary>
+        /// ИЗМЕНЕНИЕ КОЛ-ВА МЕСТ/ЦЕН
+        /// </summary>
+        /// <param name="maxNum">максимальное число</param>
+        /// <param name="exit">условие выхода</param>
+        /// <returns></returns>
         private int RedactPlacesPrices(int maxNum, ref bool exit)
         {
             int answer; // это вернётся, если всё ок
@@ -1565,6 +1924,453 @@ namespace Logic
                 return answer;
             }
         }
+
+        /// <summary>
+        /// ИЗМЕНЕНИЕ ДАТЫ (ВЫЛЕТА или ПРИЛЁТА)
+        /// </summary>
+        /// <param name="date1">дата вылета</param>
+        /// <param name="date2">дата прилёта</param>
+        private void RedactDate(ref DateTime date1, ref DateTime date2)
+        {
+            DateTime time1 = new DateTime();
+            time1 = date1;
+            DateTime time2 = new DateTime();
+            time2 = date2;
+            int line = 0;
+            ConsoleKey button;
+            bool exit = false;
+
+            while (!exit)
+            {
+                switch (line)
+                {
+                    case 0: // изменение даты вылета
+                        Console.Clear();
+
+                        Console.Write("Дата вылета:");
+                        Console.BackgroundColor = ConsoleColor.DarkRed;                        
+                        Console.WriteLine($" {time1.Day:00}.{time1.Month:00}.{time1.Year}   {time1.Hour:00}:{time1.Minute:00} ");
+                        Console.ResetColor();
+
+                        Console.WriteLine($"Дата прилёта: {time2.Day:00}.{time2.Month:00}.{time2.Year}   {time2.Hour:00}:{time2.Minute:00}");
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+
+                                exit = exit.AreUSure($"Дата вылета: {time1.Day:00}.{time1.Month:00}.{time1.Year}   {time1.Hour:00}:{time1.Minute:00}\n" +
+                                                     $"Дата прилёта: {time2.Day:00}.{time2.Month:00}.{time2.Year}   {time2.Hour:00}:{time2.Minute:00}",
+                                                      "Сохранить изменения?");
+
+                                if (exit)
+                                {
+                                    exit = isCorrect_Difference(time1, time2);
+                                    if (exit)
+                                    {
+                                        date1 = time1;
+                                        date2 = time2;
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        exit = false;
+                                    }
+                                }
+                                else
+                                {
+                                    return;
+                                }
+
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+                                    try
+                                    {
+                                        Console.WriteLine("");
+                                        Console.WriteLine($"Дата прилёта: {time2.Day:00}.{time2.Month:00}.{time2.Year}   {time2.Hour:00}:{time2.Minute:00}");
+
+                                        Console.SetCursorPosition(0, 0);
+
+
+                                        exit = isCorrect_Date(out time1);
+
+                                    }
+                                    catch
+                                    {
+                                        Console.WriteLine("\n\nДанные введены не по образцу. Повторите попытку.\n" +
+                                                          "Нажмите любую клавишу, чтобы продолжить...");
+                                        Console.ReadKey(true);
+
+                                    }
+
+                                }
+                                exit = false;
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line = 1;
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line = 1;
+                                break;                            
+                        }
+
+
+                        break;
+
+                    case 1: // изменение даты прилёта
+
+                        Console.Clear();
+
+                        Console.WriteLine($"Дата вылета: {time1.Day:00}.{time1.Month:00}.{time1.Year}   {time1.Hour:00}:{time1.Minute:00}");
+
+                        Console.Write("Дата прилёта:");
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine($" {time2.Day:00}.{time2.Month:00}.{time2.Year}   {time2.Hour:00}:{time2.Minute:00} ");
+                        Console.ResetColor();
+
+                        switch (PressedButton(out button))
+                        {
+                            case ConsoleKey.Escape:
+
+                                exit = exit.AreUSure($"Дата вылета: {time1.Day:00}.{time1.Month:00}.{time1.Year}   {time1.Hour:00}:{time1.Minute:00}\n" +
+                                                     $"Дата прилёта: {time2.Day:00}.{time2.Month:00}.{time2.Year}   {time2.Hour:00}:{time2.Minute:00}",
+                                                      "Сохранить изменения?");
+
+                                if (exit)
+                                {
+                                    exit = exit && isCorrect_Difference(time1, time2);
+                                    if (exit)
+                                    {
+                                        date1 = time1;
+                                        date2 = time2;
+
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        exit = false;
+                                    }
+
+                                }
+                                else
+                                {
+                                    return;
+                                }
+
+
+                                break;
+
+                            case ConsoleKey.Enter:
+
+                                while (!exit)
+                                {
+                                    Console.Clear();
+                                    try
+                                    {
+                                        Console.WriteLine($"Дата вылета: {time1.Day:00}.{time1.Month:00}.{time1.Year}   {time1.Hour:00}:{time1.Minute:00}");
+                                        Console.WriteLine("");
+
+                                        Console.SetCursorPosition(0, 1);
+
+                                        exit = isCorrect_Date(out time2);
+
+                                    }
+                                    catch
+                                    {
+
+                                        Console.WriteLine("\n\nДанные введены не по образцу. Повторите попытку.\n" +
+                                                          "Нажмите любую клавишу, чтобы продолжить...");
+                                        Console.ReadKey(true);
+
+                                    }
+
+                                }
+                                exit = false;
+
+                                break;
+
+                            case ConsoleKey.DownArrow:
+                                line = 0;
+                                break;
+
+                            case ConsoleKey.UpArrow:
+                                line = 0;
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// УСЛОВИЯ ИЗМЕНЕНИЯ ДАТЫ ВЫЛЕТА
+        /// </summary>
+        /// <param name="FlyOut_date">дата вылета</param>
+        /// <param name="FlyIn_date">дата прилёта</param>
+        /// <returns></returns>
+        private static bool isCorrectRedactedDateFlyOut(DateTime FlyOut_date, DateTime FlyIn_date)
+        {
+            if (FlyIn_date < FlyOut_date) // дата прилёта раньше даты вылета
+            {
+                Console.WriteLine("\n\nДата вылета не может быть позже даты прилёта. Заполните поле снова.\n" +
+                                  "Нажмите любую клавишу, чтобы продолжить...");
+                Console.ReadKey();
+                return false;
+            }
+            else // дата вылета позже даты вылета
+            {
+                var DifferenceInTime = FlyIn_date - FlyOut_date; // разница между вылетом и прилётом
+                DateTime DIfferenceDate = new DateTime(DifferenceInTime.Ticks); // преобразование разницы в экземпляр DateTime
+
+                int hour = DIfferenceDate.Hour; // разница в часах
+
+                if (hour > 0 && hour <= 18) // время полёта 1-18 часов (верно)
+                    return true;
+                else if (hour < 1) // время полёта <1 часа
+                {
+                    Console.WriteLine("\nВремя полёта слишком короткое \n" +
+                                      "Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey(true);
+
+                    return false;
+                }
+                else if (FlyIn_date.Hour <= FlyOut_date.Hour) // время прилёта 
+                {
+                    Console.WriteLine("\nВремя прилёта не может быть раньше времени вылета. Заполните поле снова.\n" +
+                                      "Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey();
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine("\nВремя полёта слишком большое \n" +
+                                      "Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey(true);
+
+                    return false;
+                }
+
+            }
+        }
+        
+
+        /// <summary>
+        /// ИЗМЕНЕНИЕ МАРКИ САМОЛЁТА
+        /// </summary>
+        /// <param name="planeMark">передача марки самолёта</param>
+        private void RedactPlaneMark(ref string planeMark)
+        {
+            string planemarkk = planeMark;
+            bool exit = false;
+
+            while (!exit)
+            {
+                Console.Clear();
+
+                Console.Write("Марка самолёта:");
+                Console.BackgroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($" {planemarkk} ");
+                Console.ResetColor();
+
+                var button = Console.ReadKey(true).Key;
+                while (button!= ConsoleKey.Escape && button != ConsoleKey.Enter)
+                {
+                    button = Console.ReadKey(true).Key;
+                }
+
+                switch (button)
+                {
+                    case ConsoleKey.Escape:
+                        exit = exit.AreUSure($"Марка самолёта: {planemarkk}",
+                                              "Сохранить изменения?");
+
+                        if (exit)
+                            planeMark = planemarkk;
+
+                        return;
+
+                        break;
+
+                    case ConsoleKey.Enter:
+
+                        while (!exit)
+                        {
+                            Console.Clear();
+
+                            Console.Write("Марка самолёта: ");
+
+                            planemarkk = Console.ReadLine();
+                            planemarkk = planemarkk.Trim();
+                            if (planemarkk.isCorrectPlaneMark())
+                            {
+                                exit = true;
+                            }
+                        }
+                        exit = false;
+
+                        break;
+                }
+
+
+            }
+
+        }
+        
+
+        /// <summary>
+            /// РЕДАКТИРОВАНИЕ КОДА АЭРОПОРТА
+            /// </summary>
+            /// <param name="air_code">Изменённый код (можно ввести тот, что был до этого</param>
+            /// <param name="not_redact">Изначальный код</param>
+            /// <param name="Airports_List">список аэропортов</param>
+            /// <returns></returns>
+        private bool isRedactedCodeCreated(string air_code, string not_redact, List<Airports> Airports_List)
+        {
+            foreach (Airports air in Airports_List)
+            {
+                if (air.Airport_Code == air_code && air_code != not_redact)
+                {
+                    Console.WriteLine("\n\n\nАэропорт с таким кодом уже существует. Введите новый код.\n" +
+                                      "Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey(true);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        private bool DDD(ref DateTime inputDateTime)
+        {
+            try
+            {
+                string dateStr = Console.ReadLine();
+                inputDateTime = DateTime.ParseExact(dateStr, "dd'.'MM'.'yyyy' 'HH':'mm", CultureInfo.CurrentCulture);
+
+                if ((inputDateTime.Year - DateTime.Now.Year) >= -2 && (inputDateTime.Year - DateTime.Now.Year) <= 2)
+                {
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("\nГод указан некорректно. Повторите попытку.");
+                    Console.ReadKey(true);
+                    return false;
+                }
+
+
+            }
+            catch
+            {
+                Console.WriteLine("\n\nДанные введены не по образцу. Повторите попытку.\n" +
+                                          "Нажмите любую клавишу, чтобы продолжить...");
+                Console.ReadKey(true);
+                inputDateTime = DateTime.MinValue;
+                return false;
+            }
+
+
+        }
+
+        /// <summary>
+        /// Редактировать аэропорт только здесь или везде
+        /// </summary>
+        /// <param name="infoUP"></param>
+        /// <param name="qa"></param>
+        /// <returns></returns>
+        private bool Redact_Everywhere_OR_Once(string infoUP = "", string qa = "")
+        {
+            // выбор (от него зависит, что выведет)
+            byte myChoise = 1;
+            while (true) // цикл отображения ДА / НЕТ
+            {
+                Console.Clear();
+                if (qa != "")
+                {
+                    Console.WriteLine(infoUP);
+                    Console.WriteLine(qa);
+                }
+                else
+                {
+                    Console.WriteLine(infoUP);
+                    Console.WriteLine("Изменить только этот элемент или все?");
+                }
+                switch (myChoise) // что вывести в зависимости от значения myChoise
+                {
+                    #region ДА
+                    case 1: //------------------------------------------------ выделяем вариант ДА
+                        Console.Write("   ");
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.Write(" Только этот ");
+                        Console.ResetColor();
+                        Console.WriteLine(" |  Все"); //---------------------- всё покрасилось красиво
+
+                        var button = Console.ReadKey(true).Key; // чтение клавиши и проверка на корректность
+                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow)
+                        {
+                            button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
+                        }
+
+                        if (button == ConsoleKey.RightArrow || button == ConsoleKey.LeftArrow) // если <-|-> то
+                        {
+                            myChoise = 2; // выделяем вариант НЕТ
+                        }
+                        else if (button == ConsoleKey.Enter)
+                        {
+                            return true;
+                        }
+                        break;
+                    #endregion
+
+                    #region НЕТ
+                    case 2:
+                        Console.Write("    Только этот  | ");//------------------------ выделяем вариант НЕТ
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine(" Все ");
+                        Console.ResetColor();//------------------------------- всё покрасилось красиво
+
+                        button = Console.ReadKey(true).Key; // чтение клавиши + проверка
+                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow)
+                        {
+                            button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
+                        }
+
+                        if (button == ConsoleKey.RightArrow || button == ConsoleKey.LeftArrow) // если <-|->, то 
+                        {
+                            myChoise = 1; // переходим на вариант ДА
+                        }
+                        else if (button == ConsoleKey.Enter)
+                        {
+                            return false;
+                        }
+                        break;
+                    #endregion
+
+                    default:
+                        break;
+                }
+
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+        
 
 
         /// <summary>

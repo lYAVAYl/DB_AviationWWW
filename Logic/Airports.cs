@@ -59,7 +59,7 @@ namespace Logic
                     exit = code.isCorrectIATA(3, 3); // проверка на корректность
 
                     code = code.ToUpper(); // перевод в верхний регистр
-                    exit = exit && alreadyCreated(code, Airport_List); 
+                    exit = exit && AirportCodeAlreadyCreated(code, Airport_List);
 
                 }
                 exit = false; // обновление условия цикла
@@ -134,7 +134,7 @@ namespace Logic
         /// <param name="air_code">код аэропорта</param>
         /// <param name="Airports_List">список аэропортов</param>
         /// <returns></returns>
-        public static bool alreadyCreated(string air_code, List<Airports> Airports_List)
+        public bool AirportCodeAlreadyCreated(string air_code, List<Airports> Airports_List)
         {
             foreach (Airports air in Airports_List)
             {
@@ -197,13 +197,13 @@ namespace Logic
         public int ChooseCreatedAirport(int FlyOut_ind = -1 )
         {
             
-            int chosenAirport = 0;
+            int chosenAirport = 0; // индекс выбранного аэропорта 
 
             int city_d = 50; // длина строки названия города
             int name_d = 60; // длина строки названия аэропорта
 
-            int start_point = 0;
-            int end_point = 3;
+            int start_point = 0; // с какого индекса выводить элементы
+            int end_point = 3; // сколько элементов можно вывести за раз
 
             while (true)
             {
@@ -211,10 +211,10 @@ namespace Logic
 
                 if(chosenAirport == FlyOut_ind) 
                 {
-                    if (FlyOut_ind == 0)
-                        chosenAirport = 1;
-                    else if (FlyOut_ind == Airport_List.Count - 1)
-                        chosenAirport = FlyOut_ind - 1;
+                    if (FlyOut_ind == 0) // если уже выбран 1-й аэропорт в списке,
+                        chosenAirport = 1; // то переходим ко 2-му
+                    else if (FlyOut_ind == Airport_List.Count - 1) // если уже выбран последний аэропорт в списке,
+                        chosenAirport = FlyOut_ind - 1; // то переходим к предпоследнему
                 }
                 // отрисовка списка аэропортов
                 Console.WriteLine(" ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
@@ -222,20 +222,21 @@ namespace Logic
                                   " ╠═════╦═══════════════════════════════════════════════════════╦═════════════════════════════════════════════════════════════════╣\n" +
                                   " ║ Код ║                        Город                          ║                              Название                           ║");
 
-                int i = start_point;
-                while (((i + 1) % end_point > 0) && (i < Airport_List.Count))
-                {
+                int i = start_point; // начало отчёта = start_point
+                while (((i + 1) % end_point > 0) && (i < Airport_List.Count)) // вывод списка аэропортов
+                { // т.к. отчёт идёт с 0, а 0 % n = 0, что противоречит 1-му условию цикла, то к i нужно прибавлять 1 (i+1)
                     
                     city_d = 50 - Airport_List[i].Airport_City.Length;
                     name_d = 60 - Airport_List[i].Airport_Name.Length;
 
 
-                    if (FlyOut_ind != -1 && FlyOut_ind == i)
-                    {
+                    if (FlyOut_ind != -1 && FlyOut_ind == i) // закрасить выбранный ранее аэропорт в СИНИЙ
+
+                    { 
+
                         Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
 
                         Console.Write(" ║ ");
-                        // закрасить выбранный ранее аэропорт в СИНИЙ
                         Console.BackgroundColor = ConsoleColor.DarkBlue;
                         Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
                         Console.ResetColor();
@@ -243,12 +244,12 @@ namespace Logic
                         Console.WriteLine("║");
 
                     }
-                    else if (chosenAirport == i)
+                    else if (chosenAirport == i) // выделение аэропортов, по которым скачет пользователь (ЖЁЛТЫЙ)
+
                     {
                         Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣");
 
                         Console.Write(" ║ ");
-                        // выделение аэропортов, по которым скачет пользователь (ЖЁЛТЫЙ)
                         Console.BackgroundColor = ConsoleColor.DarkYellow;
                         Console.Write($"{ Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ");
                         Console.ResetColor();
@@ -256,17 +257,18 @@ namespace Logic
                         Console.WriteLine("║");
 
                     }
-                    else // не выбранные аэропорта (не закрашиваются)
+                    else // не выбранные аэропорты (не закрашиваются)
                     {
                         Console.WriteLine(" ╠═════╬═══════════════════════════════════════════════════════╬═════════════════════════════════════════════════════════════════╣\n" +
                                      $" ║ {Airport_List[i].Airport_Code} ║   {Airport_List[i].Airport_City}{new string(' ', city_d)}  ║   {Airport_List[i].Airport_Name}{new string(' ', name_d)}  ║");
-
                     }
 
                     i++;
 
                 }
 
+                // из-за того, что i+1 мы не выведем последний элемент, 
+                //кратный end_point. Для этого нужно уменьшить i на 1
                 if ((i + 1) % end_point == 0 && (i < Airport_List.Count))
                 {
                     city_d = 50 - Airport_List[i].Airport_City.Length;
@@ -309,8 +311,8 @@ namespace Logic
                     i++;
                 }
 
-                    Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
-
+                Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
+                // закрытие вывода
 
                 var button = Console.ReadKey().Key; // нажатая клавиша
                 while(button != ConsoleKey.Enter && button != ConsoleKey.Escape && button != ConsoleKey.DownArrow && button != ConsoleKey.UpArrow)
@@ -350,12 +352,6 @@ namespace Logic
                             chosenAirport = 0;
                             start_point = 0;
                         }
-
-                        //if (chosenAirport < 19 && chosenAirport < Airport_List.Count-1)
-                        //{
-                        //    if (++chosenAirport == FlyOut_ind && Airport_List.Count - 1 != FlyOut_ind) // перепрыгиваем через выбранный аэропорт
-                        //        ++chosenAirport;
-                        //}
                            
                         break;
 
@@ -380,24 +376,13 @@ namespace Logic
                         if (chosenAirport == FlyOut_ind && FlyOut_ind != 0)
                         {
                             --chosenAirport;
-                            start_point -= end_point;
+                            //start_point -= end_point;
                         }
                         else if (chosenAirport == FlyOut_ind && FlyOut_ind == 0)
                         {
                             chosenAirport = Airport_List.Count - 1;
                         }
                         
-
-
-
-
-                        //if (chosenAirport > 0)
-                        //{
-                        //    if (--chosenAirport == FlyOut_ind && FlyOut_ind!=0) // перепрыгиваем через выбранный аэропорт
-                        //    {
-                        //        --chosenAirport;
-                        //    }
-                        //}
 
                         break;
 
