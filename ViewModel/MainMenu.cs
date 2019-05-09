@@ -16,15 +16,15 @@ namespace ViewModel
         static Reises reises = new Reises();
 
         /*
-           "1. Ввод данных \n" +
-           "2. Вывод таблицы на экран \n" +
+           "1. Ввод данных \n" +++
+           "2. Вывод таблицы на экран \n" +++
            "3. Удаление \n" +-
-           "4. Редактировать \n" +
-           "5. Поиск \n" +
-           "6. Сортировка \n" +
-           "7. Сохранение \n" +
-           "8. Загрузка \n" +
-           "9. Выход" 
+           "4. Редактировать \n" +++
+           "5. Поиск \n" ---
+           "6. Сортировка \n" ---
+           "7. Сохранение \n" ---
+           "8. Загрузка \n" ---
+           "9. Выход" +++
         */
 
 
@@ -194,7 +194,7 @@ namespace ViewModel
                     Console.Clear();
                     if (airports.Airport_List.Count >= 2)
                     {
-                        reises.PrintReises(airports, prices);
+                        reises.PrintReises(airports, prices, reises.Reises_List);
                     }
                     else
                     {
@@ -378,8 +378,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    Console.WriteLine("Выбран вариант 5!");
-                    Console.ReadKey();
+                    reises.SearchInfo(airports, prices, reises.Reises_List);
                     break;
 
                 case ConsoleKey.Escape:
@@ -644,37 +643,7 @@ namespace ViewModel
             return false;
         }
         #endregion
-        /// <summary>
-        /// Добавление аэропорта К
-        /// </summary>
-        /// <param name="airports">экземпляр аэропорта</param>
-        private static void AddAirport(Airports airports)
-        {
-            airports.Airport_Adding();
-        }
-
-
-
-
-
-        // ---------------------------------------> НОРМАЛЬНАЯ ТАБЛИЦА АЭРОПОРТОВ + СДЕЛАТЬ СВЯЗКУ ТАБЛИЦ И ЗАПОЛНЕНИЕ ИХ + НОВЫЕ РЕЙСЫ
-
-        /// <summary>
-        /// Вывод таблицы аэропортов
-        /// </summary>
-        /// <param name="airports">экземпляр аэропорта</param>
-        private static void PrintAirports(Airports airports)
-        {
-            Console.WriteLine("--->     Список аэропортов     <---");
-            foreach (Airports air in airports.Airport_List)
-            {
-                Console.WriteLine("Код: " + air.Airport_Code);
-                Console.WriteLine("Город: " + air.Airport_City);
-                Console.WriteLine("Название: " + air.Airport_Name);
-                Console.WriteLine("[--------------------------------------------------------------]");
-            }
-        }
-
+        
 
 
 

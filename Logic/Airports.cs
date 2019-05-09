@@ -151,7 +151,7 @@ namespace Logic
         #endregion
 
 
-        // TODO: отшлефовать по красоте (готово)
+        
         public void PrintAirports(Airports airportFlyOut, Airports airportFlyIn) 
         {
             //   ╔ ╦ ╗ ╠ ╬ ╣ ╚ ╩ ╝ ═ ║
@@ -196,14 +196,13 @@ namespace Logic
         /// <returns></returns>
         public int ChooseCreatedAirport(int FlyOut_ind = -1 )
         {
-            
             int chosenAirport = 0; // индекс выбранного аэропорта 
 
             int city_d = 50; // длина строки названия города
             int name_d = 60; // длина строки названия аэропорта
 
             int start_point = 0; // с какого индекса выводить элементы
-            int end_point = 3; // сколько элементов можно вывести за раз
+            int end_point = 20; // сколько элементов можно вывести за раз
 
             while (true)
             {

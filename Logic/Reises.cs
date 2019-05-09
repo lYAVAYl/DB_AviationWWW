@@ -26,7 +26,7 @@ namespace Logic
 
 
         // =============================================================================
-
+        #region ДОБАВЛЕНИЕ
         // Добавление рейса
         #region AddReise
         public void AddReise(Airports airports, Prices prices)
@@ -59,32 +59,40 @@ namespace Logic
                 #region Аэропорт вылета
                 while (!exit)
                 {
+                    switch (NewOrCreated("---> Добавление Рейса <---\n\n\n\n\n\n\n\nАэропорт вылета: ", ref exit))
+                    {                        
+                        case 1:
 
-                    if (NewOrCreated("---> Добавление Рейса <---\n\n\n\n\n\n\n\nАэропорт вылета: ", ref exit))
-                    {
-                        airports.Airport_Adding(); // предпоследний в списке (predposl)
-                        FlyOut_ind = airports.Airport_List.Count - 1;
-                        isNewAirportFlyOut = true;
+                            airports.Airport_Adding(); // предпоследний в списке (predposl)
+                            FlyOut_ind = airports.Airport_List.Count - 1;
+                            isNewAirportFlyOut = true;
+
+                            break;
+
+                        case 2:
+
+                            if (airports.Airport_List.Count >= 1)
+                            {
+                                FlyOut_ind = airports.ChooseCreatedAirport();
+                                if (FlyOut_ind >= 0)
+                                    exit = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nСписок аэропортов не достаточно большой. Введите хотя бы 2 аэропорта.\n" +
+                                                  "Нажмите любую клавишу, чтобы продолжить...");
+                                exit = false;
+                                Console.ReadKey(true);
+                            }
+
+                            break;
+
+                        case 3:
+                            airports.Airport_List.RemoveAt(airports.Airport_List.Count - 1);
+                            return;
+                            break;
                     }
-                    else
-                    {
-                        if (airports.Airport_List.Count >= 1)
-                        {
-                            FlyOut_ind = airports.ChooseCreatedAirport();
-                            if (FlyOut_ind >= 0)
-                                exit = true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nСписок аэропортов не достаточно большой. Введите хотя бы 2 аэропорта.\n" +
-                                              "Нажмите любую клавишу, чтобы продолжить...");
-                            exit = false;
-                            Console.ReadKey(true);
-                        }
                         
-                            
-                    }
-
                 }
                 exit = false;
                 #endregion
@@ -92,32 +100,40 @@ namespace Logic
                 #region Аэропорт прилёта
                 while (!exit)
                 {
-                    
-                    if (NewOrCreated("---> Добавление Рейса <---\n\n" +
-                                     "Аэропорт вылета: " + airports.Airport_List[FlyOut_ind].Airport_Name + "\n\n\n\n\n" +
-                                     "Аэропорт прилёта: ", ref exit))
+                    switch (
+                            NewOrCreated("---> Добавление Рейса <---\n\n" +
+                                         "Аэропорт вылета: " + airports.Airport_List[FlyOut_ind].Airport_Name + "\n\n\n\n\n" +
+                                         "Аэропорт прилёта: ", ref exit)
+                           )
                     {
-                        airports.Airport_Adding(); // предпоследний в списке (predposl)
-                        FlyIn_ind = airports.Airport_List.Count - 1;
-                        isNewAirportFlyIn = true;
+                        case 1:
 
-                    }
-                    else
-                    {
-                        if (airports.Airport_List.Count >= 2)
-                        {
-                            FlyIn_ind = airports.ChooseCreatedAirport(FlyOut_ind);
-                            if (FlyIn_ind >= 0 && FlyIn_ind!=FlyOut_ind)
-                                exit = true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nСписок аэропортов не достаточно большой. Введите хотя бы 2 аэропорта.\n" +
-                                              "Нажмите любую клавишу, чтобы продолжить...");
-                            exit = false;
-                            Console.ReadKey(true);
-                        }
+                            airports.Airport_Adding(); // предпоследний в списке (predposl)
+                            FlyIn_ind = airports.Airport_List.Count - 1;
+                            isNewAirportFlyIn = true;
 
+                            break;
+                        case 2:
+                            if (airports.Airport_List.Count >= 2)
+                            {
+                                FlyIn_ind = airports.ChooseCreatedAirport(FlyOut_ind);
+                                if (FlyIn_ind >= 0 && FlyIn_ind != FlyOut_ind)
+                                    exit = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nСписок аэропортов не достаточно большой. Введите хотя бы 2 аэропорта.\n" +
+                                                  "Нажмите любую клавишу, чтобы продолжить...");
+                                exit = false;
+                                Console.ReadKey(true);
+                            }
+
+                            break;
+
+                        case 3:
+                            airports.Airport_List.RemoveAt(airports.Airport_List.Count - 1);
+                            return;
+                            break;
                     }
 
                 }
@@ -285,14 +301,13 @@ namespace Logic
 
 
         #region NewOrCreated airport
-        // Добавить новый аэропорт или ужу созданный?
         /// <summary>
         /// Новый аэропорт или уже созданный?
         /// </summary>
         /// <param name="info">верхняя строка</param>
         /// <param name="smallExit">условие выхода (что-то выбрано)</param>
         /// <returns></returns>
-        private static bool NewOrCreated(string info, ref bool smallExit)
+        private static sbyte NewOrCreated(string info, ref bool smallExit)
         {
             // выбор (от него зависит, что выведет)
             byte myChoise = 1;
@@ -311,7 +326,7 @@ namespace Logic
                         Console.WriteLine(" |  Выбрать из существующих"); //---------------------- всё покрасилось красиво
 
                         var button = Console.ReadKey(true).Key; // чтение клавиши и проверка на корректность
-                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow)
+                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow && button != ConsoleKey.Escape)
                         {
                             button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
                         }
@@ -323,7 +338,11 @@ namespace Logic
                         else if (button == ConsoleKey.Enter)
                         {
                             smallExit = true; // выход из 'малого' цикла
-                            return true;
+                            return 1;
+                        }
+                        else if (button == ConsoleKey.Escape)
+                        {
+                            return 3;
                         }
                         
                         break;
@@ -337,7 +356,7 @@ namespace Logic
                         Console.ResetColor();//------------------------------- всё покрасилось красиво
 
                         button = Console.ReadKey(true).Key; // чтение клавиши + проверка
-                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow)
+                        while (button != ConsoleKey.Enter && button != ConsoleKey.RightArrow && button != ConsoleKey.LeftArrow && button != ConsoleKey.Escape)
                         {
                             button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
                         }
@@ -349,9 +368,14 @@ namespace Logic
                         else if (button == ConsoleKey.Enter)
                         {
                             smallExit = false; // выход из 'малого' цикла
-                            return false;
+                            return 2;
+                        }
+                        else if (button == ConsoleKey.Escape)
+                        {
+                            return 3;
                         }
                         break;
+                        
                     #endregion
 
                     default:
@@ -451,19 +475,22 @@ namespace Logic
         }
         #endregion
 
+        #endregion
         // =============================================================================
 
 
 
 
         // =============================================================================
+        #region ОТРИСОВКА ТАБЛИЦЫ
+
         // Вывод таблицы
         #region PrintReises
-        public void PrintReises(Airports airports, Prices prices)
+        public void PrintReises(Airports airports, Prices prices, List<Reises> Reises_List, string input = "", bool isSearch = false, bool isFind = false)
         {
             bool exit = false;
             int start_point = 0;
-            int end_point = 2;
+            int end_point = 20;
 
             int line = 0;            
             int column = 0;
@@ -472,6 +499,16 @@ namespace Logic
             while (!exit)
             {
                 Console.Clear();
+
+                if (isSearch)
+                {
+                    Console.Write("   ");
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                    Console.Write("Поиск");
+                    Console.ResetColor();
+                    Console.Write(": " + input);
+                    Console.WriteLine("\n\n");
+                }              
 
                 Console.WriteLine("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
                                   "║                                                               Таблица Рейсов                                                              ║\n" +
@@ -507,6 +544,8 @@ namespace Logic
 
                 Console.WriteLine("╚═══════╩═══════════════════════════════════╩═══════════════════════════════════╩══════════════╩══════════════╩═════════════════════════════╝\n");
 
+                if (isFind)
+                    return;
 
 
                 var button = Console.ReadKey(true).Key;
@@ -765,6 +804,8 @@ namespace Logic
             }
         }
         #endregion
+
+        #endregion
         // =============================================================================
 
 
@@ -776,7 +817,6 @@ namespace Logic
 
 
         // =============================================================================
-
         // Удаление элемента таблицы
         #region DeleteInfo
         public void DeleteInfo(Airports airports, Prices prices)
@@ -927,7 +967,6 @@ namespace Logic
         }
 
         #endregion
-
         // =============================================================================
 
 
@@ -938,24 +977,28 @@ namespace Logic
 
 
 
-        
-       /// <summary>
-       /// РЕДАКТИРОВАНИЕ
-       /// </summary>
-       /// <param name="airports"></param>
-       /// <param name="prices"></param>
+        // =============================================================================
+        #region РЕДАКТИРОВАНИЕ
+
+        /// <summary>
+        /// РЕДАКТИРОВАНИЕ
+        /// </summary>
+        /// <param name="airports"></param>
+        /// <param name="prices"></param>
         public void RedactInfo(Airports airports, Prices prices)
         {
             bool exit = false;
-            int start_point = 0;
             int line = 0;
-
             int column = 0;
+
+            int start_point = 0;
+
 
 
             while (!exit)
             {
                 Console.Clear();
+
 
                 Console.WriteLine("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
                                   "║                                                               Таблица Рейсов                                                              ║\n" +
@@ -2361,16 +2404,121 @@ namespace Logic
 
         }
 
+        #endregion
+        // =============================================================================
 
 
 
 
 
-
-
-
-
+        // =============================================================================
+        #region ПОИСК
         
+        public void SearchInfo(Airports airports, Prices prices, List<Reises> ReisesList)
+        {
+            Console.Clear();
+
+            bool exit = false;
+            string input = "";
+            int n = 0;
+            List<Reises> searchElements = new List<Reises>();
+
+
+            if (ReisesList.Count == 0)
+            {
+                Console.WriteLine("Список пуст. Нажмите любую кнопку, чтобы продолжить...");
+                Console.ReadKey(true);
+                return;
+            }
+            else
+            {
+
+                while (!exit)
+                {
+                    Console.Clear();
+
+                    PrintReises(airports, prices, ReisesList, input, true, true);
+                    Console.SetCursorPosition(0, 0);
+
+                    Console.Write("   ");
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                    Console.Write("Поиск");
+                    Console.ResetColor();
+                    Console.Write(": ");
+
+
+                    if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                    {
+                        exit = true;
+                        return;
+                    }
+                        
+                    else
+                    {
+                        input = Console.ReadLine();
+
+                        searchElements.Clear();
+
+                        foreach (var element in ReisesList)
+                        {
+                            if (
+                                input == element.P_ReisCode.ReisCode.ToString() ||
+                                input == element.Airport_FlyOut.Airport_City ||
+                                input == element.Airport_FlyIn.Airport_City ||
+                                input == element.Data_FlyOut.ToString() ||
+                                input == element.Data_FlyIn.ToString() ||
+                                input == element.PlaneMark
+                               )
+                            {
+                                searchElements.Add(element);
+                            }
+                        }
+
+                        if (searchElements.Count == 0)
+                        {
+                            Console.WriteLine("Совпадений не найдено. Нажмите любую кнопку, чтобы продолжить...");
+                            Console.ReadKey(true);
+                            input = "";
+
+                        }
+                        else
+                        {
+                            PrintReises(airports, prices, searchElements, input, true);
+                            input = "";
+                        }
+
+
+                    }
+                    
+                    
+                }
+                
+                
+            }
+            return;
+
+
+
+
+        }
+
+
+
+
+        #endregion
+        // =============================================================================
+
+        // =============================================================================
+        #region Сортировка
+        
+        public void Sorting()
+        
+        
+        
+        #endregion
+        // =============================================================================
+
+
 
 
         /// <summary>
