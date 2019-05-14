@@ -7,45 +7,44 @@ using System.Threading.Tasks;
 namespace Logic
 {
 
-    public class Prices
+    public class Price
     {
         // код рейса | кол-во мест бизнес-класса (коды) | цена за место-Б | кол-во мест эконом-класса (коды) | цена за место-Э
 
         /// <summary>
         /// код рейса
         /// </summary>
-        public int? ReisCode { get; set; }
+        public int ReisCode { get; private set; }
 
         /// <summary>
         /// Кол-во мест бизнес класса (коды)
         /// </summary>
-        public int? BuisnessClass_Num { get; set; }
+        public int BuisnessClass_Num { get; private set; }
 
         /// <summary>
         /// Цена за место - Бизнес
         /// </summary>
-        public int? BuisnessClass_Price { get; set; }
+        public int BuisnessClass_Price { get; private set; }
 
         /// <summary>
         /// Кол-во мест эконом класса (коды)
         /// </summary>
-        public int? EconomClass_Num { get; set; }
+        public int EconomClass_Num { get; private set; }
 
         /// <summary>
         /// Цена за место - Эконом
         /// </summary>
-        public int? EconomClass_Price { get; set; }
+        public int EconomClass_Price { get; private set; }
 
 
-        public List<Prices> Prices_List = new List<Prices>();
 
 
-        #region Добавление рейса
 
+        
         /// <summary>
         /// Добавление рейса + цены
         /// </summary>
-        public void AddPriceForReis()
+        public void AddPriceForReis(List<Price> Prices_List)
         { 
             // изначальные значения локальных переменных
             string input = "";
@@ -60,7 +59,6 @@ namespace Logic
 
             while (!allright)
             {
-
                 #region Ввод кода рейса (уникальный)
                 while (!exit)
                 {
@@ -146,6 +144,7 @@ namespace Logic
                 exit = false;
                 #endregion
 
+
                 #region Кол-во мест Эконом-Класса
                 while (!exit)
                 {
@@ -194,20 +193,19 @@ namespace Logic
                 #endregion
             }
 
-            Prices_List.Add(new Prices
-            {
-                ReisCode = reisCode,
-                BuisnessClass_Num = buisnessClass_Num,
-                BuisnessClass_Price = buisnessClass_Price,
-                EconomClass_Num = economClass_Num,
-                EconomClass_Price = economClass_Price
-            } );
+            Prices_List.Add 
+            (
+                new Price
+                {
+                    ReisCode = reisCode,
+                    BuisnessClass_Num = buisnessClass_Num,
+                    BuisnessClass_Price = buisnessClass_Price,
+                    EconomClass_Num = economClass_Num,
+                    EconomClass_Price = economClass_Price
+                } 
+            );
         }
-        #endregion
-
         
-        // alreadyCreated
-        #region Существует ли такой код рейса или нет
 
         /// <summary>
         /// Есть ли введённый код в списке?
@@ -215,19 +213,16 @@ namespace Logic
         /// <param name="reisCode">Введённый код</param>
         /// <param name="priceList">Список кодов</param>
         /// <returns></returns>
-        private static bool alreadyCreated(int number, List<Prices> priceList)
+        private static bool alreadyCreated(int number, List<Price> Prices_List)
         {
-            foreach (Prices pp in priceList)
+            foreach (var pp in Prices_List)
             {
                 if (pp.ReisCode == number)
                     return true;
             }
             return false;
         }
-        #endregion
 
-        // CXC
-        #region добавление цены/кол-ва мест
 
         /// <summary>
         /// Добавление цены/кол-ва мест
@@ -276,11 +271,12 @@ namespace Logic
                 return answer;
             }
         }
-        #endregion
 
 
-        public void PrintPrice(Prices price)
-        {
+        public void PrintPrice(Price price)
+        {            
+
+
             Console.WriteLine("╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
                               "║                                                      Таблица цен рейса                                              ║\n" +
                               "╠═══════════╦══════════════════════════╦═════════════════════════╦══════════════════════════╦═════════════════════════╣\n" +
@@ -296,7 +292,18 @@ namespace Logic
             }
         }
 
+        
+        
 
+
+        public void EditInfo(Price price, int reiscode, int BC_Price, int BC_Num, int EC_Price, int EC_Num)
+        {
+            price.ReisCode = reiscode;
+            price.BuisnessClass_Price = BC_Price;
+            price.BuisnessClass_Num = BC_Num;
+            price.EconomClass_Price = EC_Price;
+            price.EconomClass_Num = EC_Num;
+        }
 
     }
 }

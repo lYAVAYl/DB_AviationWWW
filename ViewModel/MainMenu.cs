@@ -11,9 +11,15 @@ namespace ViewModel
 {
     public class MainMenu //   ╔ ╦ ╗ ╠ ╬ ╣ ╚ ╩ ╝ ═ ║
     {
-        static Airports airports = new Airports();
-        static Prices prices = new Prices();
-        static Reises reises = new Reises();
+
+        Airport airport = new Airport();
+        List<Airport> Airport_List = new List<Airport>();
+
+        Price prices = new Price();
+        List<Price> Prices_List = new List<Price>();
+
+        Reis reis = new Reis();
+        List<Reis> Reises_List = new List<Reis>();
 
         /*
            "1. Ввод данных \n" +++
@@ -131,7 +137,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    reises.AddReise(airports, prices);
+                    reis.AddReise(Prices_List, Airport_List, Reises_List);
                     // Вызов метода добавления
                     break;
 
@@ -192,9 +198,9 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter: // выбор выделенного пункта меню
                     Console.Clear();
-                    if (airports.Airport_List.Count >= 2)
+                    if (Reises_List.Count > 0)
                     {
-                        reises.PrintReises(airports, prices, reises.Reises_List);
+                        reis.PrintReises(Reises_List);
                     }
                     else
                     {
@@ -260,7 +266,15 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    reises.DeleteInfo(airports, prices);
+                    if (Reises_List.Count > 0)
+                    {
+                        reis.DeleteInfo(Prices_List, Reises_List, prices);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Список не заполнен!");
+                        Console.ReadKey();
+                    }
                     break;
 
                 case ConsoleKey.Escape:
@@ -320,7 +334,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    reises.RedactInfo(airports, prices);
+                    reis.RedactInfo(Prices_List, Airport_List, Reises_List);
                     break;
 
                 case ConsoleKey.Escape:
@@ -378,7 +392,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    reises.SearchInfo(airports, prices, reises.Reises_List);
+                    reis.SearchInfo(airport, prices, Reises_List);
                     break;
 
                 case ConsoleKey.Escape:
@@ -438,8 +452,9 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    Console.WriteLine("Выбран вариант 6!");
-                    Console.ReadKey();
+                    //Reises_List = Reises_List.OrderBy(e => e.P_ReisCode.ReisCode).ToList();
+                    reis.Sorting(ref Reises_List);
+                    return;
                     break;
 
                 case ConsoleKey.Escape:
@@ -497,8 +512,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    Console.WriteLine("Выбран вариант 7!");
-                    Console.ReadKey();
+                    reis.Saving(Prices_List, Airport_List, Reises_List);
                     break;
 
                 case ConsoleKey.Escape:
@@ -516,7 +530,6 @@ namespace ViewModel
 
                 default:
                     Thread.Sleep(300);
-                    // снова печатать вариант 2 (Two)
                     break;
             }
         }
@@ -536,7 +549,7 @@ namespace ViewModel
                           "║   4. Редактировать                                         ║\n" +
                           "║   5. Поиск                                                 ║\n" +
                           "║   6. Сортировка                                            ║\n" +
-                          "║   7. Сортировка                                            ║\n");
+                          "║   7. Сохранение                                            ║\n");
 
             Console.Write("║   ---> ");
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -558,8 +571,7 @@ namespace ViewModel
             {
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    Console.WriteLine("Выбран вариант 8!");
-                    Console.ReadKey();
+                    reis.Loading(ref Prices_List, ref Airport_List, ref Reises_List);
                     break;
 
                 case ConsoleKey.Escape:
@@ -597,7 +609,7 @@ namespace ViewModel
                           "║   4. Редактировать                                         ║\n" +
                           "║   5. Поиск                                                 ║\n" +
                           "║   6. Сортировка                                            ║\n" +
-                          "║   7. Сортировка                                            ║\n" +
+                          "║   7. Сохранение                                            ║\n" +
                           "║   8. Загрузка                                              ║\n");
 
             Console.Write("║   ---> ");

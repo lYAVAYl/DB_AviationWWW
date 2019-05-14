@@ -8,32 +8,28 @@ using System.Threading;
 
 namespace Logic
 {
-    public class Airports
+    public class Airport
     {
         /// <summary>
         /// Код аэропорта
         /// </summary>
-        public string Airport_Code { get; set; }
+        public string Airport_Code { private set; get; }
 
         /// <summary>
         /// Город аэропорта (где расположен)
         /// </summary>
-        public string Airport_City { get; set; }
+        public string Airport_City { private set; get; }
 
         /// <summary>
         /// Название аэропорта
         /// </summary>
-        public string Airport_Name { get; set; }
-
-        /// <summary>
-        /// список аэропортов
-        /// </summary>
-        public List<Airports> Airport_List = new List<Airports>();
+        public string Airport_Name { private set; get; }
+        
 
         /// <summary>
         /// Метод добавления аэропорта
         /// </summary>
-        public void Airport_Adding()
+        public void Airport_Adding(ref List<Airport> Airport_List)
         {
             // код, город, название аэропорта
             string code = "", city = "", name = "";
@@ -116,7 +112,7 @@ namespace Logic
 
             }
             // добавление нового аэропорта в список 
-            Airport_List.Add(new Airports {
+            Airport_List.Add(new Airport {
                                             Airport_Code = code,
                                             Airport_City = city,
                                             Airport_Name = name
@@ -134,9 +130,9 @@ namespace Logic
         /// <param name="air_code">код аэропорта</param>
         /// <param name="Airports_List">список аэропортов</param>
         /// <returns></returns>
-        public bool AirportCodeAlreadyCreated(string air_code, List<Airports> Airports_List)
+        public bool AirportCodeAlreadyCreated(string air_code, List<Airport> Airports_List)
         {
-            foreach (Airports air in Airports_List)
+            foreach (var air in Airports_List)
             {
                 if (air.Airport_Code == air_code)
                 {
@@ -151,8 +147,8 @@ namespace Logic
         #endregion
 
 
-        
-        public void PrintAirports(Airports airportFlyOut, Airports airportFlyIn) 
+        // вывод информации об аэропортах (вылета | прилёта)
+        public void PrintAirports(Airport airportFlyOut, Airport airportFlyIn) 
         {
             //   ╔ ╦ ╗ ╠ ╬ ╣ ╚ ╩ ╝ ═ ║
 
@@ -194,7 +190,7 @@ namespace Logic
         /// </summary>
         /// <param name="FlyOut_ind">индекс аэропорта вылета</param>
         /// <returns></returns>
-        public int ChooseCreatedAirport(int FlyOut_ind = -1 )
+        public int ChooseCreatedAirport( List<Airport> Airport_List, int FlyOut_ind = -1)
         {
             int chosenAirport = 0; // индекс выбранного аэропорта 
 
@@ -395,5 +391,21 @@ namespace Logic
 
         }
 
+
+
+        public void DeleteAirport(Airport airport)
+        {
+            airport.Airport_Code = "---";
+            airport.Airport_City = "---";
+            airport.Airport_Name = "---";
+        }
+
+
+        public void EditInfo(Airport airport, string Code, string City, string Name)
+        {
+            airport.Airport_Code = Code;
+            airport.Airport_City = City;
+            airport.Airport_Name = Name;
+        }
     }
 }
