@@ -198,7 +198,7 @@ namespace Logic
             int name_d = 60; // длина строки названия аэропорта
 
             int start_point = 0; // с какого индекса выводить элементы
-            int end_point = 20; // сколько элементов можно вывести за раз
+            int end_point = 15; // сколько элементов можно вывести за раз
 
             while (true)
             {
@@ -306,7 +306,8 @@ namespace Logic
                     i++;
                 }
 
-                Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝ ");
+                Console.WriteLine(" ╚═════╩═══════════════════════════════════════════════════════╩═════════════════════════════════════════════════════════════════╝\n" +
+                                  "ESC - выйти");
                 // закрытие вывода
 
                 var button = Console.ReadKey().Key; // нажатая клавиша
@@ -351,33 +352,34 @@ namespace Logic
                         break;
 
                     case ConsoleKey.UpArrow: // вверх
-                        --chosenAirport;
+                        --chosenAirport; // перемещаем линию выделения на 1 вверх
 
-                        if (chosenAirport < 0)
+                        if (chosenAirport < 0) // оказались позади 1 элемента
                         {
-                            chosenAirport = Airport_List.Count - 1;
-                            start_point = (Airport_List.Count - 1) - ((Airport_List.Count - 1) % end_point);
+                            chosenAirport = Airport_List.Count - 1; // выделяем последний элемент списка аэропортов
+                            start_point = (Airport_List.Count - 1) - ((Airport_List.Count - 1) % end_point); // высчитываем начало отрисовки таблицы
 
-                            if (chosenAirport == FlyOut_ind && FlyOut_ind == Airport_List.Count - 1)
+                            if (chosenAirport == FlyOut_ind && FlyOut_ind == Airport_List.Count - 1) // аэропорт вылета - последний в списке аэропортов
                             {
-                                chosenAirport = Airport_List.Count - 2;
+                                chosenAirport = Airport_List.Count - 2; // перемещаем линию выделения на предпоследний элемент
                             }
                         }
-                        else if ((chosenAirport + 1) % end_point == 0)
+                        else if ((chosenAirport + 1) % end_point == 0) 
                         {
                             start_point -= end_point;
                         }
 
-                        if (chosenAirport == FlyOut_ind && FlyOut_ind != 0)
+                        if (chosenAirport == FlyOut_ind && FlyOut_ind != 0) // линия перехода перешла на аэропорт вылета и он не первый в списке
                         {
-                            --chosenAirport;
-                            //start_point -= end_point;
+                            --chosenAirport; // переходим на предыдущий элемент 
+                            start_point -= end_point; // уменьшаем startpoint
                         }
-                        else if (chosenAirport == FlyOut_ind && FlyOut_ind == 0)
+                        else if (chosenAirport == FlyOut_ind && FlyOut_ind == 0) // линия перехода перешла на аэропорт вылета и он первый в списке
                         {
+                            start_point = (Airport_List.Count - 1) - ((Airport_List.Count - 1) % end_point); // вы
                             chosenAirport = Airport_List.Count - 1;
                         }
-                        
+
 
                         break;
 

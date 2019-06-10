@@ -40,7 +40,7 @@ namespace Logic
         /// <returns></returns>
         public static bool isBannedSymbolsInIATA(this string testingString)
         {
-            string bannedSymbols = "0123456789!@\"'#$%^&*_+=-;<>?\\/|[]{}\t "; // запрещённые символы
+            string bannedSymbols = "!@\"'#$%^&*_+=-;<>?\\/|[]{}\t"; // запрещённые символы
 
             foreach (char symbol in testingString) // берём символ из строки
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Logic
@@ -14,7 +15,7 @@ namespace Logic
         /// <summary>
         /// код рейса
         /// </summary>
-        public int ReisCode { get; private set; }
+        public string ReisCode { get; private set; }
 
         /// <summary>
         /// Кол-во мест бизнес класса (коды)
@@ -49,8 +50,8 @@ namespace Logic
             // изначальные значения локальных переменных
             string input = "";
 
-            int reisCode = 0, 
-                buisnessClass_Num = 0, 
+            string reisCode = ""; 
+            int buisnessClass_Num = 0, 
                 buisnessClass_Price = 0, 
                 economClass_Num = 0, 
                 economClass_Price = 0;
@@ -71,30 +72,33 @@ namespace Logic
 
                     if (string.IsNullOrWhiteSpace(input)) // проверка на корректность введённых данных
                     {
-                        Console.WriteLine("\n\nПоле кода рейса не заполнено. Введите 3 цифры! \n" +
+                        Console.WriteLine("\n\nПоле кода рейса не заполнено. Пример кода: AB 1234\n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
                         Console.ReadKey();
                     }
-                    else if (input.Length > 3)
+                    else if (input.Length > 7)
                     {
-                        Console.WriteLine("\n\nКод рейса слишком длинный. Введите 3 цифры! \n" +
+                        Console.WriteLine("\n\nКод рейса слишком длинный. Пример кода: AB 1234\n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
                         Console.ReadKey();
                     }
-                    else if (input.Length < 3)
+                    else if (input.Length < 7)
                     {
-                        Console.WriteLine("\n\nКод рейса слишком короткий. Введите 3 цифры! \n" +
+                        Console.WriteLine("\n\nКод рейса слишком короткий. Пример кода: AB 1234\n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
                         Console.ReadKey();
                     }
-                    else if (!int.TryParse(input, out reisCode))
+                    else if ( !char.IsLetter(input[0]) || !char.IsLetter(input[1]) || !(input[2] == ' ') ||
+                              !char.IsDigit(input[3]) || !char.IsDigit(input[4]) || !char.IsDigit(input[5]) || !char.IsDigit(input[6]))
                     {
-                        Console.WriteLine("\n\nВ коде присутствуют символы запрещённые символы. Введите 3 цифры! \n" +
+                        Console.WriteLine("\n\nВы допустили ошибку. Пример кода: AB 1234\n" +
                                           "Нажмите любую кнопку, чтобы продолжить...");
                         Console.ReadKey();
                     }
                     else // код рейса введён верно
                     {
+                        input = input.ToUpper();
+                        reisCode = input;
                         if (Prices_List.Count != 0) // если список кодов НЕ пуст
                         {
                             if (!alreadyCreated(reisCode, Prices_List)) // смотрим, есть ли уже такой код или нет
@@ -213,7 +217,7 @@ namespace Logic
         /// <param name="reisCode">Введённый код</param>
         /// <param name="priceList">Список кодов</param>
         /// <returns></returns>
-        private static bool alreadyCreated(int number, List<Price> Prices_List)
+        private static bool alreadyCreated(string number, List<Price> Prices_List)
         {
             foreach (var pp in Prices_List)
             {
@@ -282,8 +286,9 @@ namespace Logic
                               "╠═══════════╦══════════════════════════╦═════════════════════════╦══════════════════════════╦═════════════════════════╣\n" +
                               "║ Код рейса ║ Код кресла Бизнес-класса ║ Стоимость Бизнес-класса ║ Код кресла Эконом-класса ║ Стоимость Эконом-класса ║\n" + 
                               "╠═══════════╬══════════════════════════╬═════════════════════════╬══════════════════════════╬═════════════════════════╣");
-           Console.WriteLine($"║    {price.ReisCode}{new string (' ', 7- price.ReisCode.ToString().Length)}║         000-{price.BuisnessClass_Num:000}{new string (' ', 10)}║          {price.BuisnessClass_Price}p.{new string (' ', 12 - price.BuisnessClass_Price.ToString().Length)} ║         {price.BuisnessClass_Num:000}-{price.BuisnessClass_Num + price.EconomClass_Num:000}{new string(' ', 10)}║          {price.EconomClass_Price}p.{new string(' ', 12 - price.EconomClass_Price.ToString().Length)} ║");
-            Console.WriteLine("╚═══════════╩══════════════════════════╩═════════════════════════╩══════════════════════════╩═════════════════════════╝\n");
+           Console.WriteLine($"║  {price.ReisCode}  ║         000-{price.BuisnessClass_Num:000}{new string (' ', 10)}║          {price.BuisnessClass_Price}p.{new string (' ', 12 - price.BuisnessClass_Price.ToString().Length)} ║         {price.BuisnessClass_Num+1:000}-{price.BuisnessClass_Num + price.EconomClass_Num:000}{new string(' ', 10)}║          {price.EconomClass_Price}p.{new string(' ', 12 - price.EconomClass_Price.ToString().Length)} ║");
+            Console.WriteLine("╚═══════════╩══════════════════════════╩═════════════════════════╩══════════════════════════╩═════════════════════════╝\n" +
+                              "ESC - выйти\n");
 
             var press = Console.ReadKey(true).Key;
             while (press != ConsoleKey.Escape)
@@ -296,7 +301,7 @@ namespace Logic
         
 
 
-        public void EditInfo(Price price, int reiscode, int BC_Price, int BC_Num, int EC_Price, int EC_Num)
+        public void EditInfo(Price price, string reiscode, int BC_Price, int BC_Num, int EC_Price, int EC_Num)
         {
             price.ReisCode = reiscode;
             price.BuisnessClass_Price = BC_Price;
