@@ -1,4 +1,7 @@
-﻿using System;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,7 +55,7 @@ namespace Logic
                     Console.Write("Введите IATA код аэропорта: "); // что нужно ввести
 
                     code = Console.ReadLine(); // ввода кода аэропорта
-                    exit = code.isCorrectIATA(3, 3); // проверка на корректность
+                    exit = code.IsCorrectIATA(3, 3); // проверка на корректность
 
                     code = code.ToUpper(); // перевод в верхний регистр
                     exit = exit && AirportCodeAlreadyCreated(code, Airport_List);
@@ -73,7 +76,7 @@ namespace Logic
 
                     city = Console.ReadLine(); // ввод города аэропорта
                     city = city.Trim();
-                    exit = city.isCorrectString(3, 50); // проверка на корректность
+                    exit = city.IsCorrectString(3, 50); // проверка на корректность
                 }
                 exit = false; // обновление условия цикла
                 #endregion
@@ -91,7 +94,7 @@ namespace Logic
 
                     name = Console.ReadLine(); // ввод названия аэропорта
                     name = name.Trim();
-                    exit = name.isCorrectString(3, 60); // проверка на корректность
+                    exit = name.IsCorrectString(3, 60); // проверка на корректность
                 }
                 exit = false; // обновление условия цикла
                 #endregion

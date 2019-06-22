@@ -1,4 +1,7 @@
-﻿using System;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -101,7 +104,7 @@ namespace Logic
                         reisCode = input;
                         if (Prices_List.Count != 0) // если список кодов НЕ пуст
                         {
-                            if (!alreadyCreated(reisCode, Prices_List)) // смотрим, есть ли уже такой код или нет
+                            if (!AlreadyCreated(reisCode, Prices_List)) // смотрим, есть ли уже такой код или нет
                                 exit = true; // если нет, то выходим и идём дальше
                             else // если да, выводим сообщение
                             {
@@ -217,7 +220,7 @@ namespace Logic
         /// <param name="reisCode">Введённый код</param>
         /// <param name="priceList">Список кодов</param>
         /// <returns></returns>
-        private static bool alreadyCreated(string number, List<Price> Prices_List)
+        private static bool AlreadyCreated(string number, List<Price> Prices_List)
         {
             foreach (var pp in Prices_List)
             {

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +18,7 @@ namespace Logic
         /// </summary>
         /// <param name="testingString">проверяемая строка</param>
         /// <returns></returns>
-        public static bool isBannedSymbolsInString(this string testingString)
+        public static bool IsBannedSymbolsInString(this string testingString)
         {
             string bannedSymbols = "0123456789!@\"#$%^&*_+=;<>?\\/|[]{}\t"; // запрещённые символы
 
@@ -38,7 +41,7 @@ namespace Logic
         /// </summary>
         /// <param name="testingString">проверяемая строка</param>
         /// <returns></returns>
-        public static bool isBannedSymbolsInIATA(this string testingString)
+        public static bool IsBannedSymbolsInIATA(this string testingString)
         {
             string bannedSymbols = "!@\"'#$%^&*_+=-;<>?\\/|[]{}\t"; // запрещённые символы
 
@@ -61,7 +64,7 @@ namespace Logic
         /// </summary>
         /// <param name="testingString">проверяемая строка</param>
         /// <returns></returns>
-        public static bool isBannedSymbolsInPlaneMark(this string testingString)
+        public static bool IsBannedSymbolsInPlaneMark(this string testingString)
         {
             string bannedSymbols = "!@\"#$%^&*_+=;<>?/|[]{}\t"; // запрещённые символы
 
@@ -89,7 +92,7 @@ namespace Logic
         /// <param name="minLenght">минимальная длина</param>
         /// <param name="maxLenght">максимальная длина</param>
         /// <returns></returns>
-        public static bool isCorrectString(this string testingString, int minLenght = 3, int maxLenght = 60)
+        public static bool IsCorrectString(this string testingString, int minLenght = 3, int maxLenght = 60)
         {
             if (string.IsNullOrWhiteSpace(testingString)) // пустая
             {
@@ -98,7 +101,7 @@ namespace Logic
                 Console.ReadKey();
                 return false;
             }
-            else if (testingString.isBannedSymbolsInString()) // есть ли запрещённые символы
+            else if (testingString.IsBannedSymbolsInString()) // есть ли запрещённые символы
             {
                 Console.WriteLine("\n\nВведённая строка содержит запрещённые символы. Заполните поле снова.\n" +
                                   "Нажмите любую кнопку, чтобы продолжить...");
@@ -133,7 +136,7 @@ namespace Logic
         /// <param name="minLenght">минимальная длина</param>
         /// <param name="maxLenght">максимальная длина</param>
         /// <returns></returns>
-        public static bool isCorrectIATA(this string testingString, int minLenght = 3, int maxLenght = 60)
+        public static bool IsCorrectIATA(this string testingString, int minLenght = 3, int maxLenght = 60)
         {
             if (string.IsNullOrWhiteSpace(testingString)) // пустая
             {
@@ -142,7 +145,7 @@ namespace Logic
                 Console.ReadKey();
                 return false;
             }
-            else if (testingString.isBannedSymbolsInIATA()) // есть ли запрещённые символы
+            else if (testingString.IsBannedSymbolsInIATA()) // есть ли запрещённые символы
             {
                 Console.WriteLine("\n\nВведённая строка содержит запрещённые символы. Заполните поле снова.\n" +
                                   "Нажмите любую кнопку, чтобы продолжить...");
@@ -177,7 +180,7 @@ namespace Logic
         /// <param name="minLenght">минимальная длина</param>
         /// <param name="maxLenght">максимальная длина</param>
         /// <returns></returns>
-        public static bool isCorrectPlaneMark(this string testingString, int minLenght = 3, int maxLenght = 50)
+        public static bool IsCorrectPlaneMark(this string testingString, int minLenght = 3, int maxLenght = 50)
         {
             if (string.IsNullOrWhiteSpace(testingString)) // пустая
             {
@@ -186,7 +189,7 @@ namespace Logic
                 Console.ReadKey();
                 return false;
             }
-            else if (testingString.isBannedSymbolsInPlaneMark()) // есть ли запрещённые символы
+            else if (testingString.IsBannedSymbolsInPlaneMark()) // есть ли запрещённые символы
             {
                 Console.WriteLine("\n\nВведённая строка содержит запрещённые символы. Заполните поле снова.\n" +
                                   "Нажмите любую кнопку, чтобы продолжить...");
@@ -266,12 +269,13 @@ namespace Logic
                         {
                             myChoise = 2; // выделяем вариант НЕТ
                         }
-                        else if (button == ConsoleKey.Enter)
+                        else
                         {
                             //bigExit = true; // выход из 'большого' цикла
                             //smallExit = true; // выход из 'малого' цикла
                             return true;
                         }
+
                         break;
                     #endregion
 
@@ -292,7 +296,7 @@ namespace Logic
                         {
                             myChoise = 1; // переходим на вариант ДА
                         }
-                        else if (button == ConsoleKey.Enter)
+                        else
                         {
                             //bigExit = false; // выход из 'большого' цикла
                             //smallExit = true; // выход из 'малого' цикла

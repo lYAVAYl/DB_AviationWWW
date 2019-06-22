@@ -1,10 +1,14 @@
-﻿using System;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 // Taiwan Taoyuan International (Chiang Kai Shek International)
 // Piper PA-31 Navajo Chieftain - Navajo Chieftain
 namespace Logic
@@ -186,7 +190,7 @@ namespace Logic
                     try
                     {
                         Console.WriteLine("Дата вылета.");
-                        exit = isCorrect_Date(out FlyOut_data);
+                        exit = IsCorrect_Date(out FlyOut_data);
 
                     }
                     catch
@@ -211,7 +215,7 @@ namespace Logic
                     try
                     {
                         Console.WriteLine("Дата прилёта.");
-                        exit = isCorrect_Date(out FlyIn_data) && isCorrect_Difference(FlyOut_data, FlyIn_data);
+                        exit = IsCorrect_Date(out FlyIn_data) && IsCorrect_Difference(FlyOut_data, FlyIn_data);
                         
                     }
                     catch
@@ -244,7 +248,7 @@ namespace Logic
 
                     planemark = Console.ReadLine();
                     planemark = planemark.Trim();
-                    if (planemark.isCorrectPlaneMark())
+                    if (planemark.IsCorrectPlaneMark())
                     {
                         Console.Clear();
 
@@ -336,11 +340,7 @@ namespace Logic
                             button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
                         }
 
-                        if (button == ConsoleKey.RightArrow || button == ConsoleKey.LeftArrow) // если <-|-> то
-                        {
-                            myChoise = 2; // выделяем вариант НЕТ
-                        }
-                        else if (button == ConsoleKey.Enter)
+                        if (button == ConsoleKey.Enter)
                         {
                             smallExit = true; // выход из 'малого' цикла
                             return 1;
@@ -349,7 +349,13 @@ namespace Logic
                         {
                             return 3;
                         }
-                        
+                        else 
+                        {
+                            myChoise = 2; // выделяем вариант НЕТ
+                        }
+                        // если <-|-> (стрелка вправо/влево)
+
+
                         break;
                     #endregion
 
@@ -366,11 +372,8 @@ namespace Logic
                             button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
                         }
 
-                        if (button == ConsoleKey.RightArrow || button == ConsoleKey.LeftArrow) // если <-|->, то 
-                        {
-                            myChoise = 1; // переходим на вариант ДА
-                        }
-                        else if (button == ConsoleKey.Enter)
+                        
+                        if (button == ConsoleKey.Enter)
                         {
                             smallExit = false; // выход из 'малого' цикла
                             return 2;
@@ -379,6 +382,13 @@ namespace Logic
                         {
                             return 3;
                         }
+                        else  
+                        {
+                            myChoise = 1; // переходим на вариант ДА
+                        }
+                        // если <-|-> (стрелка вправо/влево)
+
+
                         break;
                         
                     #endregion
@@ -394,7 +404,7 @@ namespace Logic
 
         // Проверка даты на корректность (+- 2 года от текущей даты)
         #region isCorrect_Date
-        private static bool isCorrect_Date(out DateTime inputDateTime)
+        private static bool IsCorrect_Date(out DateTime inputDateTime)
         {
             try
             {
@@ -431,7 +441,7 @@ namespace Logic
 
         // разница во времени между датой вылета и прилёта (макс. вермя полёта - 18 часов)
         #region isCorrect Difference between FlyOut & FlyIn dates
-        private static bool isCorrect_Difference(DateTime FlyOut_date, DateTime FlyIn_date)
+        private static bool IsCorrect_Difference(DateTime FlyOut_date, DateTime FlyIn_date)
         {
             if (FlyIn_date < FlyOut_date) // дата прилёта раньше даты вылета
             {
@@ -495,6 +505,7 @@ namespace Logic
         {
             Airport airport = new Airport();
             Price price = new Price();
+
             bool exit = false;
             int start_point = 0;
             int end_point = 10;
@@ -515,7 +526,7 @@ namespace Logic
                     Console.ResetColor();
                     Console.Write(": " + input);
                     Console.WriteLine("\n\n");
-                }              
+                }
 
                 Console.WriteLine("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗\n" +
                                   "║                                                               Таблица Рейсов                                                              ║\n" +
@@ -570,9 +581,8 @@ namespace Logic
                     button = Console.ReadKey(true).Key;
                 }
 
-                if (button == ConsoleKey.Escape)
-                    return;
-                else if (button == ConsoleKey.Enter)
+                
+                if (button == ConsoleKey.Enter)
                 {
                     if (column == 0)
                         price.PrintPrice(Reises_List[line].P_ReisCode);
@@ -653,6 +663,8 @@ namespace Logic
                         start_point = 0;
                     }
                 }
+                else
+                    return;
 
 
             }
@@ -769,7 +781,6 @@ namespace Logic
                         Console.ResetColor();
 
                         Console.WriteLine($"║    {flyIn_Date.Hour:00}:{flyIn_Date.Minute:00}     ║  {PlaneMark_2}{new string(' ', 25 - PlaneMark_2.Length)}  ║");
-
 
                         break;
 
@@ -920,12 +931,10 @@ namespace Logic
                        button != ConsoleKey.PageDown)
                 {
                     button = Console.ReadKey(true).Key;
-                }
+                } 
 
-
-                if (button == ConsoleKey.Escape) // выйти
-                    return;
-                else if (button == ConsoleKey.Enter) // выбрать элемент
+                
+                if (button == ConsoleKey.Enter) // выбрать элемент
                 {
                     if (column == 0) // удалить код рейса
                     {
@@ -1037,8 +1046,10 @@ namespace Logic
                         start_point = 0;
                     }
                 }
-
+                else
+                    return;
             }
+        
         }
 
         #endregion
@@ -1130,9 +1141,8 @@ namespace Logic
                     button = Console.ReadKey(true).Key;
                 }
 
-                if (button == ConsoleKey.Escape) // выйти
-                    return;
-                else if (button == ConsoleKey.Enter) // выбрать элемент
+                
+                if (button == ConsoleKey.Enter) // выбрать элемент
                 {
                     switch (column)
                     {
@@ -1166,7 +1176,7 @@ namespace Logic
                                         exxxit = true;
                                     }
 
-                                }                                
+                                }
                                 else
                                 { // изменил свойства и сделал ссылки
                                     RedactAirport(Reises_List[line].Airport_FlyOut, Reises_List[line].Airport_FlyIn, Airports_List);
@@ -1225,12 +1235,12 @@ namespace Logic
                             RedactPlaneMark(ref Reises_List[line].PlaneMark);
                             break;
 
-                    }                    
+                    }
 
                 }
                 else if (button == ConsoleKey.RightArrow)
                 {
-                    if (column < 6)
+                    if (column < 5)
                     {
                         ++column;
                     }
@@ -1302,7 +1312,8 @@ namespace Logic
                         start_point = 0;
                     }
                 }
-
+                else
+                    return;
             }
         }
 
@@ -1860,10 +1871,9 @@ namespace Logic
                         {
                             myChoise = 2; // выделяем вариант НЕТ
                         }
-                        else if (button == ConsoleKey.Enter)
-                        {
+                        else
                             return true;
-                        }
+
                         break;
                     #endregion
 
@@ -1880,14 +1890,15 @@ namespace Logic
                             button = Console.ReadKey(true).Key; // изменение если неправильная клавиша
                         }
 
+
                         if (button == ConsoleKey.RightArrow || button == ConsoleKey.LeftArrow) // если <-|->, то 
                         {
                             myChoise = 1; // переходим на вариант ДА
                         }
-                        else if (button == ConsoleKey.Enter)
-                        {
+                        else 
                             return false;
-                        }
+                        
+
                         break;
                     #endregion
 
@@ -1966,10 +1977,10 @@ namespace Logic
 
                                     Iata = Console.ReadLine();
 
-                                    if (Iata.isCorrectIATA())
+                                    if (Iata.IsCorrectIATA())
                                     {
                                         Iata = Iata.ToUpper();
-                                        exit = isRedactedCodeCreated(Iata, airport1.Airport_Code, Airports_List);
+                                        exit = IsRedactedCodeCreated(Iata, airport1.Airport_Code, Airports_List);
                                     }
 
                                 }
@@ -2041,7 +2052,7 @@ namespace Logic
 
                                     City = Console.ReadLine();
                                     City = City.Trim();
-                                    exit = City.isCorrectString(3, 50);
+                                    exit = City.IsCorrectString(3, 50);
                                 }
                                 exit = false;
 
@@ -2112,7 +2123,7 @@ namespace Logic
 
                                     Name = Console.ReadLine();
                                     Name = Name.Trim();
-                                    exit = Name.isCorrectString(3, 50);
+                                    exit = Name.IsCorrectString(3, 50);
 
                                 }
                                 exit = false;
@@ -2145,7 +2156,7 @@ namespace Logic
         /// <param name="not_redact">Изначальный код</param>
         /// <param name="Airports_List">список аэропортов</param>
         /// <returns></returns>
-        private bool isRedactedCodeCreated(string air_code, string not_redact, List<Airport> Airports_List)
+        private bool IsRedactedCodeCreated(string air_code, string not_redact, List<Airport> Airports_List)
         {
             foreach (var air in Airports_List)
             {
@@ -2204,12 +2215,12 @@ namespace Logic
 
                                 if (exit)
                                 {
-                                    exit = isCorrect_Difference(time1, time2);
+                                    exit = IsCorrect_Difference(time1, time2);
                                     if (exit)
                                     {
                                         date1 = time1;
                                         date2 = time2;
-                                        return;
+                                        exit = true;
                                     }
                                     else
                                     {
@@ -2217,9 +2228,8 @@ namespace Logic
                                     }
                                 }
                                 else
-                                {
                                     return;
-                                }
+
 
                                 break;
 
@@ -2236,7 +2246,7 @@ namespace Logic
                                         Console.SetCursorPosition(0, 0);
 
 
-                                        exit = isCorrect_Date(out time1);
+                                        exit = IsCorrect_Date(out time1);
 
                                     }
                                     catch
@@ -2285,7 +2295,8 @@ namespace Logic
 
                                 if (exit)
                                 {
-                                    exit = exit && isCorrect_Difference(time1, time2);
+                                    exit = exit && IsCorrect_Difference(time1, time2);
+
                                     if (exit)
                                     {
                                         date1 = time1;
@@ -2319,7 +2330,7 @@ namespace Logic
 
                                         Console.SetCursorPosition(0, 1);
 
-                                        exit = isCorrect_Date(out time2);
+                                        exit = IsCorrect_Date(out time2);
 
                                     }
                                     catch
@@ -2355,7 +2366,7 @@ namespace Logic
         /// <param name="FlyOut_date">дата вылета</param>
         /// <param name="FlyIn_date">дата прилёта</param>
         /// <returns></returns>
-        private static bool isCorrectRedactedDateFlyOut(DateTime FlyOut_date, DateTime FlyIn_date)
+        private static bool IsCorrectRedactedDateFlyOut(DateTime FlyOut_date, DateTime FlyIn_date)
         {
             if (FlyIn_date < FlyOut_date) // дата прилёта раньше даты вылета
             {
@@ -2452,7 +2463,7 @@ namespace Logic
 
                             planemarkk = Console.ReadLine();
                             planemarkk = planemarkk.Trim();
-                            if (planemarkk.isCorrectPlaneMark())
+                            if (planemarkk.IsCorrectPlaneMark())
                             {
                                 exit = true;
                             }
@@ -2518,7 +2529,6 @@ namespace Logic
 
             bool exit = false;
             string input = "";
-            int n = 0;
             string text = "   Поиск:";
 
             List<Reis> searchElements = new List<Reis>();
@@ -2780,9 +2790,8 @@ namespace Logic
                     button = Console.ReadKey(true).Key;
                 }
 
-                if (button == ConsoleKey.Escape)
-                    return;
-                else if (button == ConsoleKey.Enter)
+                
+                if (button == ConsoleKey.Enter)
                 {
                     switch (column)
                     {
@@ -2866,7 +2875,8 @@ namespace Logic
                         column = 5;
                     }
                 }
-
+                else
+                    return;
 
             }
         }
@@ -3131,7 +3141,7 @@ namespace Logic
                     if (input.Length <= 60)
                     {
                         c = button.KeyChar;
-                        if (char.IsDigit(c) || char.IsLetter(c) || char.IsPunctuation(c))
+                        if (char.IsDigit(c) || char.IsLetter(c) || char.IsPunctuation(c) || c == ' ')
                             input += c;
                     }
                     

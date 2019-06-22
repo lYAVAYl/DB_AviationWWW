@@ -1,4 +1,6 @@
-﻿using System;
+﻿//
+//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,14 +38,14 @@ namespace ViewModel
 
         // Вывод пунктов меню
         #region Главное меню
-        int myChoise { get; set; }
+        int MyChoise { get; set; }
 
         /// <summary>
         /// Меню
         /// </summary>
         public void Menu()
         {
-            myChoise = 1; // изначальный выбор
+            MyChoise = 1; // изначальный выбор
             bool exitFromProgram = false; // условие выхода
 
             while (!exitFromProgram)
@@ -51,7 +53,7 @@ namespace ViewModel
                 Console.Clear();
 
                 // какой пункт меню выбран
-                switch (myChoise)
+                switch (MyChoise)
                 {
                     case 1:
                         One();
@@ -143,15 +145,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape:
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 default:
@@ -211,15 +213,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape: // выход из проги
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow: // стрелочка вверх - идти выше
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow: // стрелочка вниз - идти ниже
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
@@ -279,15 +281,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape:
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
@@ -339,15 +341,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape:
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
@@ -397,15 +399,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape:
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
@@ -459,15 +461,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape:
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
@@ -517,15 +519,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape:
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
@@ -576,15 +578,15 @@ namespace ViewModel
 
                 case ConsoleKey.Escape:
                     Console.Clear();
-                    myChoise = 9;
+                    MyChoise = 9;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise++;
+                    MyChoise++;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
@@ -642,11 +644,11 @@ namespace ViewModel
                     break;
 
                 case ConsoleKey.DownArrow:
-                    myChoise = 1;
+                    MyChoise = 1;
                     break;
 
                 case ConsoleKey.UpArrow:
-                    myChoise--;
+                    MyChoise--;
                     break;
 
                 default:
