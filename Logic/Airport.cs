@@ -375,7 +375,6 @@ namespace Logic
                         if (chosenAirport == FlyOut_ind && FlyOut_ind != 0) // линия перехода перешла на аэропорт вылета и он не первый в списке
                         {
                             --chosenAirport; // переходим на предыдущий элемент 
-                            start_point -= end_point; // уменьшаем startpoint
                         }
                         else if (chosenAirport == FlyOut_ind && FlyOut_ind == 0) // линия перехода перешла на аэропорт вылета и он первый в списке
                         {
